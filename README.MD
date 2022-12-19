@@ -32,3 +32,16 @@
 // defined in that file are scope to that module.
 
 console.log(module);
+
+//-----------------------------------
+
+// Module wrapper 
+// Node never execute our code directly, it always wrappeed into
+// module of functions.
+
+(function(exports, require, module, __filename, __dirname) {
+    console.log(__filename);
+    console.log(__dirname);
+    var url = 'https://mylogger.js/log';
+});
+
