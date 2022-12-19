@@ -13,10 +13,23 @@
 
 // console.log(pathObj);
 
-// Take information about Operating System.
-const os = require("os");
-const totalMemory = os.totalmem();
-const freeMemory = os.freemem();
 
-console.log("Total Memory: ", (totalMemory / 1024) * 100);
-console.log("Free Memory: ", freeMemory);
+// Take information about Operating System.
+// const os = require("os");
+// const totalMemory = os.totalmem();
+// const freeMemory = os.freemem();
+
+// console.log("Total Memory: ", (totalMemory / 1024) * 100);
+// console.log("Free Memory: ", freeMemory);
+
+
+const fs = require('fs');
+
+// fs include all sync and async (blocking to non-blocking) methods.
+// const files = fs.readdirSync("./")
+// console.log(files);
+
+fs.readdir('./', (err, files) => {
+    if (err) console.log("error", err)
+    else console.log("Results", files)
+})
