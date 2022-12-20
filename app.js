@@ -46,13 +46,15 @@
 
 
 // ORDER IS IMPORTANT
-const EventEmitter = require("events");
-const emitter = new EventEmitter();
+// const EventEmitter = require("events");
+// const emitter = new EventEmitter();
+
+const Logger = require('./logger');
+const logger = new Logger();
 
 // Register a listeer
-emitter.on('messageLogged', function(args) {
-    console.log("Listener Called");
+logger.on('messageLogged', function(args) {
+    console.log("Listener Called", args);
 });
 
-// Raise an Event
-emitter.emit("messageLogged", {id: 1, method: 'post', url: "http://"});
+logger.log("Message");
