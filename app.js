@@ -23,13 +23,36 @@
 // console.log("Free Memory: ", freeMemory);
 
 
-const fs = require('fs');
+// const fs = require('fs');
 
 // fs include all sync and async (blocking to non-blocking) methods.
 // const files = fs.readdirSync("./")
 // console.log(files);
 
-fs.readdir('./', (err, files) => {
-    if (err) console.log("error", err)
-    else console.log("Results", files)
-})
+//         promise - call back function 
+// fs.readdir('./', (err, files) => {
+//     if (err) console.log("error", err)
+//     else console.log("Results", files)
+// })
+
+// fs.readFile('./README.MD', (err, file) => {
+//     console.log(file)
+// });
+
+// fs.readFileSync('./README.MD', (err, file) => {
+//     if (err) console.log(err)
+//     else console.log(file)
+// })
+
+
+// ORDER IS IMPORTANT
+const EventEmitter = require("events");
+const emitter = new EventEmitter();
+
+// Register a listeer
+emitter.on('messageLogged', function() {
+    console.log("Listener Called");
+});
+
+// Raise an Event
+emitter.emit("messageLogged");
