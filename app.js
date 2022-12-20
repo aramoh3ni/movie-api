@@ -50,9 +50,9 @@ const EventEmitter = require("events");
 const emitter = new EventEmitter();
 
 // Register a listeer
-emitter.on('messageLogged', function() {
+emitter.on('messageLogged', function(args) {
     console.log("Listener Called");
 });
 
 // Raise an Event
-emitter.emit("messageLogged");
+emitter.emit("messageLogged", {id: 1, method: 'post', url: "http://"});
