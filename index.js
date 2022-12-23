@@ -1,18 +1,23 @@
+const debug = require('debug')('app:startup');
+
 const morgan = require('morgan');
 const Joi = require("joi");
 const logger = require("./logger");
 const express = require("express");
 const app = express();
 
+require('dotenv').config();
+
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const env = app.get('env');
+const envirnment = process.env.NODE_ENV;
 
-if (env === 'development') {
+if (envirnment === 'development') {
   app.use(morgan('tiny'));
+  debug("Morgan enabled...");
 }
 
 // Custom Middleware
