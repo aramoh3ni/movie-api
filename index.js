@@ -1,11 +1,19 @@
+const morgan = require('morgan');
 const Joi = require("joi");
-const logger = require('./logger');
+const logger = require("./logger");
 const express = require("express");
 const app = express();
 
 //middleware
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
+const env = app.get('env');
+
+if (env === 'development') {
+  app.use(morgan('tiny'));
+}
 
 // Custom Middleware
 app.use(logger);
@@ -13,6 +21,7 @@ app.use(logger);
 const PORT = process.env.PORT || 3000;
 
 const { fakebooks } = require("./data/mock.json");
+
 
 app.get("/", (req, res) => {
   return res.send("Hello World!!!");
@@ -58,15 +67,17 @@ app.put("/api/books/:id", async (req, res) => {
   if (error) return res.status(400).json(error.details[0].message);
 
   try {
+    let data = [...fakebooks];
     // VALIDATE THE BODY
     const { error } = validateBook(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     // CHECK IF ITEM EXISTS
-    let data = await fakebooks.find((item) => item._id === parseInt(id));
-    if (!data) return res.status(404).send("Item not Exists");
+    const movie = await data.findIndex(item => item._id === parseInt(id));
+    if (!movie) return res.status(404).send("Item not Exists");
 
     // Update here.
+    data[movie] = req.body;
 
     res.status(200).send("Update SUccessfulyy");
   } catch (err) {
