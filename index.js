@@ -1,8 +1,14 @@
 const Joi = require("joi");
+const logger = require('./logger');
 const express = require("express");
 const app = express();
 
+//middleware
+
 app.use(express.json());
+
+// Custom Middleware
+app.use(logger);
 
 const PORT = process.env.PORT || 3000;
 
