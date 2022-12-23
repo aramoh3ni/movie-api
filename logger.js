@@ -1,13 +1,13 @@
-const EventEmitter = require("events");
+// const EventEmitter = require("events");
 
-class Logger extends EventEmitter {
+// class Logger extends EventEmitter {
     
-    log = (message) => {
-    console.log(`Hello, ${message}`);
+//     log = (message) => {
+//     console.log(`Hello, ${message}`);
 
-    this.emit("messageLogged", { id: 1, url: "https://" });
-  };
-}
+//     this.emit("messageLogged", { id: 1, url: "https://" });
+//   };
+// }
 
 // var url = "http://mylogger.io/log";
 
@@ -26,4 +26,4 @@ class Logger extends EventEmitter {
 // module.exports.endPont = url;
 
 // to export log as a method
-module.exports = Logger;
+// module.exports = Logger;

@@ -1,0 +1,32 @@
+{
+    "fakebooks": [
+        {
+            "_id": 1,
+            "name": "JavaScript for Developers.",
+            "isbn": "550BACE04",
+            "genre": "edu",
+            "published_year": "2021"
+        },
+        {
+            "_id": 2,
+            "name": "Data Structure and Algorithms.",
+            "isbn": "5504BDEF4",
+            "genre": "edu",
+            "published_year": "2019"
+        },
+        {
+            "_id": 3,
+            "name": "Design Pattern using Python.",
+            "isbn": "DDEE4543DE",
+            "genre": "edu",
+            "published_year": "2000"
+        },
+        {
+            "_id": 4,
+            "name": "Build RESTFUL API using EXPRESS.js.",
+            "isbn": "55FFAE404",
+            "genre": "edu",
+            "published_year": "2020"
+        }
+    ]
+}
