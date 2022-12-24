@@ -1,21 +1,14 @@
-// Asynchronous Structure
-// Problem CALLBACK HELL or crismase tree 😆 or nesting calling function.
 console.log("Before");
-getUser(1, (user) => {
-  getRepository(user.gitHubUsername, (repos) => {
-    getCommits(repos[0], (commits) => {
-        console.log(commits);
-    })
-  });
-});
+getUser(1, getRepository);
 console.log("After");
 
-// Synchronous Strucutre
-const user = getUser(1);
-const repos = getRepository(user.gitHubUsername);
-const commits = getCommits(repos[0]);
+function getRepository(user) {
+  getRepository(user.gitHubUsername, getCommits);
+}
 
-
+function displayCommits(commits) {
+  getCommits(commits);
+}
 
 function getUser(id, callback) {
   setTimeout(() => {
@@ -31,11 +24,9 @@ function getRepository(username, callback) {
   }, 1000);
 }
 
-
 function getCommits(repos, callback) {
-    setTimeout(() => {
-      console.log("Reading commit from Github.com...");
-      callback(["commit1", "commit2", "commit3"]);
-    }, 1000);
-  }
-  
+  setTimeout(() => {
+    console.log("Reading commit from Github.com...");
+    callback(["commit1", "commit2", "commit3"]);
+  }, 1000);
+}
