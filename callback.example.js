@@ -2,13 +2,13 @@ console.log("Before");
 getUser(1, getRepository);
 console.log("After");
 
-function getRepository(user) {
-  getRepository(user.gitHubUsername, getCommits);
-}
+// Flat Structure and chain them 
+getUser(1)
+  .then((user) => getRepository(user.gitHubUsername))
+  .then((repos) => getCommits(repos[0]))
+  .then((commits) => console.log(commits))
+  .catch((err) => console.log(err.message));
 
-function displayCommits(commits) {
-  getCommits(commits);
-}
 
 function getUser(id) {
   return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ function getRepository(user) {
 function getCommits(repos) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      console.log("Reading commit from Github.com...");
+      console.log("Reading commits from Github.com...");
       resolve(["commit1", "commit2", "commit3"]);
     }, 1000);
   });
