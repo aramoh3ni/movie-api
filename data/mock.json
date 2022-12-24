@@ -28,5 +28,137 @@
             "genre": "edu",
             "published_year": "2020"
         }
+    ],
+    "movies": [
+        {
+            "_id": "8ff9f9a39a8c34690",
+            "title": "Terminator",
+            "slogn": "terminator",
+            "numberInStock": 6,
+            "genre": {
+                "_id": "54de43dw34554453edc",
+                "name": "Action"
+            },
+            "like": true,
+            "dailyRentalRate": 2.2
+        },
+        {
+            "_id": "8ff9f9a39a8c34691",
+            "title": "Die Hard",
+            "slogn": "die-hard",
+            "numberInStock": 5,
+            "genre": {
+                "_id": "54de43dw34554453edc",
+                "name": "Action"
+            },
+            "like": false,
+            "dailyRentalRate": 2.6
+        },
+        {
+            "_id": "8ff9f9a39a8c34692",
+            "title": "Get Out",
+            "slogn": "get-out",
+            "numberInStock": 8,
+            "genre": {
+                "_id": "54de43dw34554453ede",
+                "name": "Thriller"
+            },
+            "like": false,
+            "dailyRentalRate": 2.8
+        },
+        {
+            "_id": "8ff9f9a39a8c34693",
+            "title": "Trip to Italy",
+            "slogn": "trip-to-italy",
+            "numberInStock": 7,
+            "genre": {
+                "_id": "54de43dw34554453eda",
+                "name": "Comedy"
+            },
+            "like": false,
+            "dailyRentalRate": 3.3
+        },
+        {
+            "_id": "8ff9f9a39a8c34694",
+            "title": "Airplane",
+            "slogn": "airplane",
+            "numberInStock": 7,
+            "genre": {
+                "_id": "54de43dw34554453eda",
+                "name": "Comedy"
+            },
+            "like": false,
+            "dailyRentalRate": 4.6
+        },
+        {
+            "_id": "8ff9f9a39a8c34695",
+            "title": "Hary Pater",
+            "slogn": "hary-pater",
+            "numberInStock": 22,
+            "genre": {
+                "_id": "54de43dw34554453edd",
+                "name": "Fancy"
+            },
+            "like": false,
+            "dailyRentalRate": 23.9
+        },
+        {
+            "_id": "8ff9f9a39a8c34696",
+            "title": "The Lord of the Ring",
+            "slogn": "the-lord-of-the-ring",
+            "numberInStock": 8,
+            "genre": {
+                "_id": "54de43dw34554453edd",
+                "name": "Fancy"
+            },
+            "like": false,
+            "dailyRentalRate": 12.1
+        },
+        {
+            "_id": "8ff9f9a39a8c34697",
+            "title": "Latary",
+            "slogn": "latary",
+            "numberInStock": 10,
+            "genre": {
+                "_id": "54de43dw34554453edb",
+                "name": "Romantic"
+            },
+            "like": false,
+            "dailyRentalRate": 2.3
+        },
+        {
+            "_id": "8ff9f9a39a8c34698",
+            "title": "The House of the Drogan",
+            "slogn": "the-house-of-the-drogan",
+            "numberInStock": 4,
+            "genre": {
+                "_id": "54de43dw34554453edd",
+                "name": "Fancy"
+            },
+            "like": false,
+            "dailyRentalRate": 11.8
+        }
+    ],
+    "genres": [
+        {
+            "_id": "54de43dw34554453eda",
+            "name": "Comedy"
+        },
+        {
+            "_id": "54de43dw34554453edb",
+            "name": "Romantic"
+        },
+        {
+            "_id": "54de43dw34554453edc",
+            "name": "Action"
+        },
+        {
+            "_id": "54de43dw34554453edd",
+            "name": "Fancy"
+        },
+        {
+            "_id": "54de43dw34554453ede",
+            "name": "Thriller"
+        }
     ]
 }
