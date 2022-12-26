@@ -5,6 +5,12 @@ const morgan = require("morgan");
 const express = require("express");
 const app = express();
 
+// ROUTES
+const movies = require("./routes/movie");
+const genres = require("./routes/genre");
+const books = require("./routes/books");
+const home = require("./routes/main");
+
 // ENV VARIABLES
 require("dotenv").config();
 const envirnment = process.env.NODE_ENV;
@@ -28,12 +34,7 @@ mongoose
   .then(() => console.log(`Connected to ${process.env.DB_NAME}`))
   .catch((err) => console.log("Database connection Error", err.message));
 
-// ROUTES
-const movies = require("./routes/movie");
-const genres = require("./routes/genre");
-const books = require("./routes/books");
-const home = require("./routes/main");
-
+// ENDPOINTS
 app.use("/api/movies", movies);
 app.use("/api/books", books);
 app.use("/api/genres", genres);
