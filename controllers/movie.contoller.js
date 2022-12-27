@@ -26,8 +26,7 @@ const movieObject = (movie, genre) => {
 async function getMovies(req, res) {
   try {
     const movies = await MovieModel.find()
-      .sort("name")
-      .select({ $nin: ["createAt", "updateAt"] });
+      .sort("name");
     if (!movies) return res.status(404).send("No Value.");
     res.status(200).json(movies);
   } catch (err) {
