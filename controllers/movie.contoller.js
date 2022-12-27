@@ -25,9 +25,11 @@ const movieObject = (movie, genre) => {
 
 async function getMovies(req, res) {
   try {
-    const result = await MovieModel.find();
-    if (!result) return res.status(404).send("No Value.");
-    res.status(200).json(result);
+    const movies = await MovieModel.find()
+      .sort("name")
+      .select({ $nin: ["createAt", "updateAt"] });
+    if (!movies) return res.status(404).send("No Value.");
+    res.status(200).json(movies);
   } catch (err) {
     res.status(400).json(err.message);
   }
@@ -55,7 +57,7 @@ async function setMovie(req, res) {
       return res.status(400).send(`Item with ${req.body.title} name exists.`);
 
     const genre = await GenreModel.findById(req.body.genre._id);
-    if (!genre) return res.status(400).json("Invaid Genre");
+    if (!genre) return res.status(400).json("Invalid Genre");
 
     const movieObj = movieObject(req.body, genre);
     const newMovie = new MovieModel(movieObj);
@@ -76,7 +78,7 @@ async function updateMovie(req, res) {
     if (error) return res.status(400).send(error.details[0].message);
 
     const genre = await GenreModel.findById(req.body.genre._id);
-    if (!genre) return res.status(400).json("Invaid Genre");
+    if (!genre) return res.status(404).json("Invalid Genre");
 
     const updateMovie = await MovieModel.findByIdAndUpdate(
       id,
@@ -86,7 +88,7 @@ async function updateMovie(req, res) {
       }
     );
 
-    if (!updateMovie) return res.status(400).send("Item not inserted!");
+    if (!updateMovie) return res.status(400).send("Update faild.");
 
     res.status(201).json("Update Successfully.");
   } catch (err) {

@@ -41,7 +41,7 @@ const movieSchema = new mongoose.Schema(
       default: [],
     },
     isPublished: { type: Boolean, default: false },
-    date: { type: Date, default: Date.now },
+    releasedOn: { type: String, required: true, minlength: 4, maxlength: 4 },
     price: {
       type: Number,
       required: function () {
@@ -61,6 +61,7 @@ const validateMovie = (movie) => {
     trailerUrl: Joi.string().label("Trailer Image"),
     price: Joi.number().integer().required().label("Price"),
     isPublished: Joi.boolean().label("Publish"),
+    releasedOn: Joi.string().required().min(4).max(4).label("Released Year"),
     numberInStock: Joi.number()
       .integer()
       .min(1)

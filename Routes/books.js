@@ -2,7 +2,7 @@ const Joi = require("joi");
 const express = require("express");
 const router = express.Router();
 
-const { fakebooks } = require("../data/mock.json");
+// const { fakebooks } = require("../data/mock.json");
 
 router.get("/", (req, res) => {
   return res.send(JSON.stringify(fakebooks));
