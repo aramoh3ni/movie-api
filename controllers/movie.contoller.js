@@ -1,23 +1,6 @@
 const { GenreModel } = require("../models/genre.model");
 const { MovieModel, validateMovie } = require("../models/movie.model");
 
-const movieObject = (movie, genre) => ({
-  name: movie.name,
-  category: movie.category,
-  tags: movie.tags,
-  trailerUrl: movie.trailerUrl,
-  coverImageUrl: movie.coverImageUrl,
-  numberInStock: parseInt(movie.numberInStock),
-  dailyRentalRate: parseFloat(movie.dailyRentalRate),
-  likes: [],
-  isPublished: movie.isPublished,
-  price: movie.price,
-  genre: {
-    _id: genre._id,
-    name: genre.name,
-  },
-});
-
 async function getMovies(req, res) {
   try {
     const movies = await MovieModel.find().sort("name");
@@ -54,8 +37,11 @@ async function setMovie(req, res) {
     const genre = await GenreModel.findById(req.body.genre);
     if (!genre) return res.status(400).json("Invalid Genre");
 
-    // const movieObj = movieObject(req.body, genre);
-    req.body.genre = genre;
+    req.body.genre = {
+      _id: genre._id,
+      name: genre.name,
+    };
+
     const newMovie = new MovieModel(req.body);
 
     const result = await newMovie.save();
