@@ -1,4 +1,5 @@
-// const debug = require('debug')('app:startup');
+require('dotenv/config');
+const debug = require('debug')('app:startup');
 const mongoose = require("mongoose").set("strictQuery", false);
 const morgan = require("morgan");
 // const logger = require("./middleware/logger");
@@ -12,22 +13,21 @@ const customers = require('./routes/customer');
 const books = require("./routes/books");
 const home = require("./routes/main");
 
+// ENV VARIABLES
+const ENV = process.env.STATUS;
+const PORT = process.env.PORT || 3000;
+const DB_URL = process.env.HOST + process.env.DB
+
 //MIDDLEWARE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.static("public"));  // configuring static files.
 // app.use(logger);
 
-// ENV VARIABLES
-require("dotenv").config();
-const ENV = process.env.STATUS;
-const PORT = process.env.PORT || 3000;
-const DB_URL = process.env.HOST + process.env.DB
-
 // SETUP ENV
 if (ENV === "development") {
-  app.use(morgan("common"));
-  // debug("Morgan enabled...");
+  app.use(morgan('dev'));
+  debug("Morgan enabled...");
 }
 
 // DATABASE SETUP
