@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 
 // NESSACERY MODLES
@@ -14,7 +13,6 @@ const movieSchema = new mongoose.Schema(
       maxlength: 100,
       unique: true,
     },
-    category: { type: String, required: true, lowercase: true, trim: true },
     tags: {
       type: Array,
       required: function (v) {
@@ -41,7 +39,7 @@ const movieSchema = new mongoose.Schema(
       default: [],
     },
     isPublished: { type: Boolean, default: false },
-    releasedOn: { type: String, required: true, minlength: 4, maxlength: 4 },
+    releasedOn: { type: Number, min: 1, max: 2022 },
     price: {
       type: Number,
       required: function () {
@@ -55,13 +53,12 @@ const movieSchema = new mongoose.Schema(
 const validateMovie = (movie) => {
   const result = Joi.object({
     name: Joi.string().min(6).max(255).strip().required().label("Title"),
-    category: Joi.string().required().lowercase().trim().label("Category"),
-    genre: Joi.object().required(),
+    genre: Joi.string().required(),
     coverImageUrl: Joi.string().required().label("Cover Image"),
     trailerUrl: Joi.string().label("Trailer Image"),
-    price: Joi.number().integer().required().label("Price"),
+    price: Joi.number().integer().label("Price"),
     isPublished: Joi.boolean().label("Publish"),
-    releasedOn: Joi.string().required().min(4).max(4).label("Released Year"),
+    releasedOn: Joi.number().min(1).max(2022).label("Released Year"),
     numberInStock: Joi.number()
       .integer()
       .min(1)
