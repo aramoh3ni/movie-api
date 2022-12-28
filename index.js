@@ -1,4 +1,3 @@
-require("dotenv").config();
 // const debug = require('debug')('app:startup');
 const mongoose = require("mongoose").set("strictQuery", false);
 const morgan = require("morgan");
@@ -6,24 +5,24 @@ const morgan = require("morgan");
 const express = require("express");
 const app = express();
 
-// ENV VARIABLES
-const ENV = process.env.NODE_ENV;
-const PORT = process.env.PORT || 3000;
-const DBURL = process.env.DB_URL
-
-
 // ROUTES
 const movies = require("./routes/movie");
 const genres = require("./routes/genre");
+const customers = require('./routes/customer');
 const books = require("./routes/books");
 const home = require("./routes/main");
-
 
 //MIDDLEWARE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.static("public"));
+// app.use(express.static("public"));  // configuring static files.
 // app.use(logger);
+
+// ENV VARIABLES
+require("dotenv").config();
+const ENV = process.env.STATUS;
+const PORT = process.env.PORT || 3000;
+const DB_URL = process.env.HOST + process.env.DB
 
 // SETUP ENV
 if (ENV === "development") {
@@ -33,7 +32,7 @@ if (ENV === "development") {
 
 // DATABASE SETUP
 mongoose
-  .connect("mongodb://127.0.0.1:27017/dailymovies")
+  .connect(DB_URL)
   .then(() => console.log(`Connected to Database`))
   .catch((err) => console.log("Database connection Error", err.message));
 
@@ -41,9 +40,10 @@ mongoose
 app.use("/api/movies", movies);
 app.use("/api/books", books);
 app.use("/api/genres", genres);
+app.use('/api/customers', customers)
 app.use("/", home);
 
 app.listen(PORT, (err) => {
   if (err) console.log(`Connection: ${err}`);
-  else console.log(`Server Listening on PORT ${PORT} 🚀`);
+  else console.log(`Server is listening on PORT ${PORT} 🚀`);
 });
