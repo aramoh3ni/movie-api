@@ -61,7 +61,7 @@ const movieSchema = new mongoose.Schema(
 const validateMovie = (movie) => {
   const result = Joi.object({
     name: Joi.string().min(6).max(255).trim().required().label("Title"),
-    genre: Joi.string().required(),
+    genre: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required(),
     coverImageUrl: Joi.string().required().label("Cover Image"),
     trailerUrl: Joi.string().label("Trailer Image"),
     price: Joi.number().integer().min(0).label("Price"),

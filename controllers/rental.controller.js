@@ -1,7 +1,6 @@
 const { RentalModel, validateRental } = require("../models/rental.model");
 const { CustomerModel } = require("../models/customer.model");
 const { MovieModel } = require("../models/movie.model");
-const { default: mongoose } = require("mongoose");
 
 const getRentals = async (req, res) => {
   try {
@@ -28,18 +27,16 @@ const getRentalById = async (req, res) => {
 
 const setRental = async (req, res) => {
   try {
-    const { isValid } = mongoose.Types.ObjectId;
     const { customerId, movieId } = req.body;
     const { error } = validateRental({ customerId, movieId });
     if (error) return res.status(400).json(error.details[0].message);
-
-    if (!isValid(customerId) || !isValid(movieId))
-      return res.status(400).json("Invalid Object id");
 
     const customer = await CustomerModel.findById(customerId);
     if (!customer) return res.status(400).json("Invalid Customer.");
     const movie = await MovieModel.findById(movieId);
     if (!movie) return res.status(400).json("Invalid Movie.");
+
+
 
     let rental = new RentalModel({
       customer: {
@@ -56,6 +53,10 @@ const setRental = async (req, res) => {
       },
     });
     await rental.save();
+
+    movie.numberInStock--;
+    await movie.save();
+
     return !rental
       ? res.status(400).json("Invalid Rental Object")
       : res.status(201).json(rental);

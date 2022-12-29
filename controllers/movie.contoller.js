@@ -56,12 +56,8 @@ async function setMovie(req, res) {
 async function updateMovie(req, res) {
   try {
     const { id } = req.params;
-    const { isValid } = mongoose.Types.ObjectId;
     const { error } = validateMovie(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-
-    if (!isValid(req.body.genreId))
-      return res.status(400).json("Invalid Object id");
 
     const genre = await GenreModel.findById(req.body.genreId);
     if (!genre) return res.status(404).json("Invalid Genre");

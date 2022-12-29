@@ -60,8 +60,8 @@ const RentalModel = mongoose.model("Rental", rentalSchema);
 
 const validateRental = (rental) =>
   Joi.object({
-    customerId: Joi.string().required(),
-    movieId: Joi.string().required(),
+    customerId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required(),
+    movieId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required(),
   }).validate(rental);
 
 module.exports = {
