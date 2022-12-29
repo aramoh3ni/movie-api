@@ -11,6 +11,7 @@ const movieSchema = new mongoose.Schema(
       required: true,
       minlength: 5,
       maxlength: 255,
+      trim: true,
     },
     tags: {
       type: Array,

@@ -42,12 +42,12 @@ async function setMovie(req, res) {
       name: genre.name,
     };
 
-    const newMovie = new MovieModel(req.body);
+    let newMovie = new MovieModel(req.body);
 
-    const result = await newMovie.save();
-    return !result
+    await newMovie.save();
+    return !newMovie
       ? res.status(400).send("Item not inserted!")
-      : res.status(201).json("Insert Successfully.");
+      : res.status(201).json(newMovie);
   } catch (err) {
     res.status(400).send(err.message);
   }
@@ -56,13 +56,20 @@ async function setMovie(req, res) {
 async function updateMovie(req, res) {
   try {
     const { id } = req.params;
+    const { isValid } = mongoose.Types.ObjectId;
     const { error } = validateMovie(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const genre = await GenreModel.findById(req.body.genre);
+    if (!isValid(req.body.genreId))
+      return res.status(400).json("Invalid Object id");
+
+    const genre = await GenreModel.findById(req.body.genreId);
     if (!genre) return res.status(404).json("Invalid Genre");
 
-    req.body.genre = genre;
+    req.body.genre = {
+      _id: genre._id,
+      name: genre.name
+    };
 
     const movie = await MovieModel.findByIdAndUpdate(id, req.body, {
       new: true,
