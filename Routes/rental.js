@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const auth = require('../middleware/auth');
+const { auth, isAdmin } = require("../middleware");
 
 // CONTROLLERS
 const {
@@ -8,8 +8,8 @@ const {
   setRental,
 } = require("../controllers/rental.controller");
 
-router.get("/", auth, getRentals);
-router.get("/:id", auth, getRentalById);
-router.post("/", auth, setRental);
+router.get("/", auth, isAdmin, getRentals);
+router.get("/:id", auth, isAdmin, getRentalById);
+router.post("/", auth, isAdmin, setRental);
 
 module.exports = router;

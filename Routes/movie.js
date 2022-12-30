@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const auth = require("../middleware/auth");
+const { auth, isAdmin } = require("../middleware");
 
 // CONTROLLERS
 const {
@@ -14,8 +14,8 @@ const {
 
 router.get("/", getMovies);
 router.get("/:id", getMovieById);
-router.post("/", auth, setMovie);
-router.put("/:id", auth, updateMovie);
-router.delete("/:id", auth, deleteMovie);
+router.post("/", auth, isAdmin, setMovie);
+router.put("/:id", auth, isAdmin, updateMovie);
+router.delete("/:id", auth, isAdmin, deleteMovie);
 
 module.exports = router;
