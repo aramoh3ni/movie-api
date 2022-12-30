@@ -2,6 +2,9 @@ const { RentalModel, validateRental } = require("../models/rental.model");
 const { CustomerModel } = require("../models/customer.model");
 const { MovieModel } = require("../models/movie.model");
 
+// Initionalizing Transcation using Fawn library.
+const Fawn = require("fawn").init(process.env.HOST + process.env.DB, "rentals");
+
 const getRentals = async (req, res) => {
   try {
     const rentals = await RentalModel.find().sort("-outDate");
@@ -36,8 +39,6 @@ const setRental = async (req, res) => {
     const movie = await MovieModel.findById(movieId);
     if (!movie) return res.status(400).json("Invalid Movie.");
 
-
-
     let rental = new RentalModel({
       customer: {
         _id: customer._id,
@@ -52,10 +53,21 @@ const setRental = async (req, res) => {
         dailyRentalRate: movie.dailyRentalRate,
       },
     });
-    await rental.save();
 
-    movie.numberInStock--;
-    await movie.save();
+    new Fawn.Task()
+      .save("rentals", rental)
+      .update(
+        "movies",
+        { _id: movie._id },
+        {
+          $inc: { numberInStock: -1 },
+        }
+      )
+      .run();
+    // custome implementation
+    // await rental.save();
+    // movie.numberInStock--;
+    // await movie.save();
 
     return !rental
       ? res.status(400).json("Invalid Rental Object")

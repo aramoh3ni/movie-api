@@ -1,6 +1,6 @@
 // MODEL & VALIDATION
 const { GenreModel, validateGenre } = require("../models/genre.model");
-// const { MovieModel } = require("../models/movie.model");
+const { MovieModel } = require("../models/movie.model");
 
 const getGenre = async (req, res) => {
   try {
@@ -51,12 +51,20 @@ const updateGenre = async (req, res) => {
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).json(error.details[0].message);
 
+    // Update all Movies with current genre id
+    const movie = await MovieModel.updateMany(
+      { "genre._id": id },
+      { "genre.name": req.body.name },
+      { new: true }
+    );
+    if(!movie.acknowledged) return res.status(400).json("Movie collection Update faild.")
+    
+    // Update Genre
     const genre = await GenreModel.findByIdAndUpdate(
       id,
       { name: req.body.name },
       { new: true }
     );
-
     return !genre
       ? res.status(404).json("The genre with the given ID was not found.")
       : res.status(201).json(genre);
