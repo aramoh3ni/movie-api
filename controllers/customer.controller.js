@@ -27,10 +27,13 @@ const setCustomer = async (req, res) => {
     const { error } = validateCustomer(req.body);
     if (error) return res.status(400).json(error.details[0].message);
 
-    let customer = await CustomerModel.findOne({ userId: req.body.userId });
-    if (customer) return res.status(400).send("Customer Aleary Exists.");
-
-    const newCustomer = new CustomerModel(req.body);
+    const newCustomer = new CustomerModel({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      birthYear: req.body.birthYear,
+      phone: req.body.phone,
+      location: req.body.location,
+    });
 
     const result = await newCustomer.save();
     return !result
@@ -46,9 +49,21 @@ const updateCustomer = async (req, res) => {
     const { error } = validateCustomer(req.body);
     if (error) return res.status(400).json(error.details[0].message);
 
-    let customer = await CustomerModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    let customer = await CustomerModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          birthYear: req.body.birthYear,
+          phone: req.body.phone,
+          location: req.body.location,
+        },
+      },
+      {
+        new: true,
+      }
+    );
     return !customer
       ? res.status(400).send("There is no customer with current ID.")
       : res.status(201).json(customer);
