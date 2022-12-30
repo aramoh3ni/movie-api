@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
@@ -21,6 +22,13 @@ const userSchema = new mongoose.Schema({
   },
   isAdmin: { type: Boolean, default: false },
 });
+
+// methods
+userSchema.methods.genAuthToken = function () {
+  const fullName = this.firstName + " " + this.lastName;
+  return jwt.sign({ _id: this._id, name: fullName }, process.env.TOKEN_SECERT);
+};
+
 const UserModel = mongoose.model("User", userSchema);
 
 const validateUser = (user) =>

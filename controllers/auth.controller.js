@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const { UserModel } = require("../models/users.model");
@@ -18,14 +17,7 @@ module.exports = {
       if (!validPassword)
         return res.status(400).json("Invalid Email or Password.");
 
-      const fullName = user.firstName + " " + user.lastName;
-      const token = jwt.sign({
-        _id: user.id,
-        name: fullName,
-        isAdmin: user.isAdmin,
-      }, process.env.TOKEN_SECERT);
-
-      res.status(200).json(token);
+      res.status(200).json(user.genAuthToken());
     } catch (error) {
       res.status(500).json(error.message);
     }
