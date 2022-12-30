@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const { UserModel } = require("../models/users.model");
@@ -18,7 +18,14 @@ module.exports = {
       if (!validPassword)
         return res.status(400).json("Invalid Email or Password.");
 
-      res.status(200).json(_.pick(user, ["firstName", "lastName", "email"]));
+      const fullName = user.firstName + " " + user.lastName;
+      const token = jwt.sign({
+        _id: user.id,
+        name: fullName,
+        isAdmin: user.isAdmin,
+      }, process.env.TOKEN_SECERT);
+
+      res.status(200).json(token);
     } catch (error) {
       res.status(500).json(error.message);
     }
@@ -28,10 +35,10 @@ module.exports = {
 const validateAuth = (user) =>
   Joi.object({
     email: Joi.string()
-    .required()
-    .email()
-    .min(5)
-    .max(255)
-    .label("Email Address"),
+      .required()
+      .email()
+      .min(5)
+      .max(255)
+      .label("Email Address"),
     password: Joi.string().required(),
   }).validate(user);

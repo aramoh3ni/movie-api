@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { UserModel, validateUser } = require("../models/users.model");
@@ -36,7 +37,15 @@ module.exports = {
       user.password = await bcrypt.hash(user.password, salt);
       
       user = await user.save();
-      res.status(201).json(_.pick(user, ["firstName", "lastName", "email"]));
+      
+      const fullName = user.firstName + " " + user.lastName;
+      const token = jwt.sign({
+        _id: user.id,
+        name: fullName,
+        isAdmin: user.isAdmin,
+      }, process.env.TOKEN_SECERT);
+
+      res.status(201).header("x-auth-token", token).json(_.pick(user, ["firstName", "lastName", "email"]));
     } catch (error) {
       res.status(500).json(error.message);
     }
