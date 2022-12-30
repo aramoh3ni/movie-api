@@ -23,9 +23,8 @@ const ENV = process.env.STATUS;
 const PORT = process.env.PORT || 3000;
 const DB_URL = process.env.HOST + process.env.DB;
 
-//MIDDLEWARE
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+// app.use(express.urlencoded({ extended: true }));
 // app.use(express.static("public"));  // configuring static files.
 // app.use(logger);
 
@@ -37,11 +36,12 @@ if (ENV === "development") {
 
 // DATABASE SETUP
 mongoose
-  .connect(DB_URL)
-  .then(() => console.log(`Connected to Database`))
-  .catch((err) => console.log("Database connection Error", err.message));
+.connect(DB_URL)
+.then(() => console.log(`Connected to Database`))
+.catch((err) => console.log("Database connection Error", err.message));
 
-// ENDPOINTS
+//MIDDLEWARE
+app.use(express.json());
 app.use("/api/auth", auth);
 app.use("/api/users", users);
 app.use("/api/movies", movies);

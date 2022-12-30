@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const auth = require("../middleware/auth");
+
 // CONTROLLERS
 const {
   getMovies,
@@ -12,8 +14,8 @@ const {
 
 router.get("/", getMovies);
 router.get("/:id", getMovieById);
-router.post("/", setMovie);
-router.put("/:id", updateMovie);
-router.delete("/:id", deleteMovie);
+router.post("/", auth, setMovie);
+router.put("/:id", auth, updateMovie);
+router.delete("/:id", auth, deleteMovie);
 
 module.exports = router;
