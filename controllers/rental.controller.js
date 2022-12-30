@@ -3,7 +3,9 @@ const { CustomerModel } = require("../models/customer.model");
 const { MovieModel } = require("../models/movie.model");
 
 // Initionalizing Transcation using Fawn library.
-const Fawn = require("fawn").init(process.env.HOST + process.env.DB, "rentals");
+const Fawn = require("fawn");
+
+Fawn.init(process.env.HOST + process.env.DB, "rentals");
 
 const getRentals = async (req, res) => {
   try {
