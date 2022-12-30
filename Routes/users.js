@@ -5,6 +5,7 @@ const auth = require("../middleware/auth");
 
 // CONTROLLERS
 const {
+  getMe,
   getUsers,
   getUserById,
   setUser,
@@ -13,6 +14,7 @@ const {
 } = require("../controllers/user.controller");
 
 // ROUTES
+router.get("/me", auth, getMe);
 router.get("/", auth, getUsers);
 router.get("/:id", auth, getUserById);
 router.post("/", setUser);

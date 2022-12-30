@@ -3,6 +3,16 @@ const _ = require("lodash");
 const { UserModel, validateUser } = require("../models/users.model");
 
 module.exports = {
+  getMe: async (req, res) => {
+    try {
+      const user = await UserModel.findById(req.user._id).select(
+        "-password -__v"
+      );
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(400).json("An Authorized User");
+    }
+  },
   getUsers: async (req, res) => {
     try {
       const users = await UserModel.find().select("-password -__v");
