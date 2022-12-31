@@ -4,18 +4,15 @@ const { UserModel } = require("../models/users.model");
 module.exports = {
   authUser: async (req, res) => {
     try {
-      const { error } = validateAuth(req.body);
-      if (error) return res.status(400).send(error.details[0].message);
+      const { email, password } = req.body;
+      const { error } = validateAuth({ email, password });
+      if (error) return res.status(400).send("Invalid Email or Password.");
 
-      let user = await UserModel.findOne({ email: req.body.email });
-      if (!user) return res.status(400).send("Invalid Email or Password");
+      let user = await UserModel.findOne({ email });
+      if (!user) return res.status(400).send("Invalid Email or Password.");
 
-      const validPassword = await bcrypt.compare(
-        req.body.password,
-        user.password
-      );
-      if (!validPassword)
-        return res.status(400).send("Invalid Email or Password.");
+      const isMatch = user.isValidPassword(password);
+      if(!isMatch) return res.status(401).send("Invalid Email or Password");
 
       const token = user.genAuthToken();
 

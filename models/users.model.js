@@ -37,6 +37,14 @@ userSchema.methods.genAuthToken = function () {
   return token;
 };
 
+userSchema.methods.isValidPassword = async function (password, next) {
+  try {
+    return await bcrypt.compare(password, this.password);
+  } catch (error) {
+    throw error;
+  }
+};
+
 userSchema.pre("save", async function (next) {
   try {
     const salt = await bcrypt.genSalt(15);
@@ -44,8 +52,7 @@ userSchema.pre("save", async function (next) {
     this.password = hashedPassword;
     next();
   } catch (error) {
-    console.log(error.message);
-    return;
+    throw error.message;
   }
 });
 
