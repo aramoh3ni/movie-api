@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { UserModel, validateUser } = require("../models/users.model");
 
@@ -9,37 +8,33 @@ module.exports = {
       const user = await UserModel.findById(req.user._id).select(
         "-password -__v"
       );
-      if (user.disable) return res.status(400).send("Invalid Account.");
       res.status(200).send(user);
     } catch (error) {
       res.status(400).send("An Authorized User");
     }
   },
-  deleteMe: async (req, res) => {
+  updateMe: async (req, res) => {
     try {
-      const { password } = req.body;
-      const { error } = validatePassword({ password });
-      if (error) return res.status(400).send("Invalid Credential.");
-
-      let user = await UserModel.findById(req.user._id).select("-__v");
-      if (!user) return res.status(400).send("Invalid Email or Password.");
-
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) return res.status(401).send("Invalid Credential.");
+      const { error } = validateMe(req.body);
+      if (error) return res.status(400).send(error.details[0].message);
 
       user = await UserModel.findByIdAndUpdate(
-        user._id,
-        { $set: { disable: true } },
+        req.user._id,
+        {
+          $set: {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+          },
+        },
         { new: true }
       );
-      if (!user) return res.status(400).send("Invalid Email or Password2222.");
+      if (!user) return res.status(400).send("Invalid Account.");
 
-      res.status(200).send("Sorry! Your Account Is Deleted.");
+      res.status(200).send(user);
     } catch (error) {
       res.status(400).send(error.message);
     }
   },
-  updateMe: async (req, res) => {},
   getUsers: async (req, res) => {
     try {
       const users = await UserModel.find().select("-password -__v");
@@ -67,16 +62,26 @@ module.exports = {
       if (error) return res.status(400).send(error.details[0].message);
 
       const userExists = await UserModel.findOne({ email: req.body.email });
-      if (userExists) return res.status(400).send("User already Exists");
+      if (userExists.disable && userExists.disable === true) {
+        await userExists.updateOne(
+          {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            disable: false,
+          },
+          { new: true }
+        );
+        const token = userExists.genAuthToken();
+        return res
+          .status(201)
+          .header("x-auth-token", token)
+          .send(_.pick(userExists, ["firstName", "lastName", "email"]));
+      }
+      if (userExists && !userExists.disable)
+        return res.status(400).send("User already Exists");
 
       let user = new UserModel(
-        _.pick(req.body, [
-          "firstName",
-          "lastName",
-          "email",
-          "password",
-          "imageUrl",
-        ])
+        _.pick(req.body, ["firstName", "lastName", "email", "password"])
       );
       user = await user.save();
       const token = user.genAuthToken();
@@ -90,13 +95,8 @@ module.exports = {
   },
 };
 
-const validatePassword = (password) =>
+const validateMe = (user) =>
   Joi.object({
-    password: Joi.string()
-      .min(6)
-      .max(1024)
-      .pattern(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-      )
-      .required(),
-  }).validate(password);
+    firstName: Joi.string().min(2).max(64).label("Firstname"),
+    lastName: Joi.string().min(2).max(54).label("Lastname"),
+  }).validate(user);
