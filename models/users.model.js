@@ -27,10 +27,10 @@ const userSchema = new mongoose.Schema({
 // methods
 userSchema.methods.genAuthToken = function () {
   const payload = { _id: this._id, isAdmin: this.isAdmin };
-  const secret = process.env.TOKEN_SECERT;
+  const secret = process.env.ACCESS_TOKEN_SECERT;
   const options = {
     expiresIn: "1hr",
-    issuer: "pickurapage.com",
+    issuer: "aramoh3ni.netlify.app",
     audience: `${this._id}`,
   };
   const token = jwt.sign(payload, secret, options);

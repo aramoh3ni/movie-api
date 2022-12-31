@@ -4,7 +4,7 @@ module.exports = function auth(req, res, next) {
     const token = req.header("x-auth-token");
     if (!token) return res.status(401).json("Access Denied.");
 
-    const decoded = jwt.verify(token, process.env.TOKEN_SECERT);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECERT);
     req.user = decoded;
     next();
   } catch (error) {
