@@ -5,10 +5,10 @@ const getCutomers = async (req, res) => {
   try {
     const customers = await CustomerModel.find().sort("firstName");
     return !customers
-      ? res.status(404).json("No Value.")
+      ? res.status(404).send("No Value.")
       : res.status(200).send(customers);
   } catch (error) {
-    res.status(400).json(error.message);
+    res.status(400).send(error.message);
   }
 };
 const getCutomerById = async (req, res) => {
@@ -16,16 +16,16 @@ const getCutomerById = async (req, res) => {
     const { id } = req.params;
     const customer = await CustomerModel.findById(id);
     return !customer
-      ? res.status(404).json("No Value.")
+      ? res.status(404).send("No Value.")
       : res.status(200).send(customer);
   } catch (error) {
-    res.status(400).json(error.message);
+    res.status(400).send(error.message);
   }
 };
 const setCustomer = async (req, res) => {
   try {
     const { error } = validateCustomer(req.body);
-    if (error) return res.status(400).json(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const newCustomer = new CustomerModel({
       firstName: req.body.firstName,
@@ -37,17 +37,17 @@ const setCustomer = async (req, res) => {
 
     const result = await newCustomer.save();
     return !result
-      ? res.status(400).json("Item not inserted!")
-      : res.status(201).json(result);
+      ? res.status(400).send("Item not inserted!")
+      : res.status(201).send(result);
   } catch (err) {
-    return res.status(400).json(err.message);
+    return res.status(400).send(err.message);
   }
 };
 const updateCustomer = async (req, res) => {
   try {
     const { id } = req.params;
     const { error } = validateCustomer(req.body);
-    if (error) return res.status(400).json(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     let customer = await CustomerModel.findByIdAndUpdate(
       id,
@@ -66,9 +66,9 @@ const updateCustomer = async (req, res) => {
     );
     return !customer
       ? res.status(400).send("There is no customer with current ID.")
-      : res.status(201).json(customer);
+      : res.status(201).send(customer);
   } catch (err) {
-    return res.status(400).json(err.message);
+    return res.status(400).send(err.message);
   }
 };
 const deleteCustomer = async (req, res) => {
@@ -76,10 +76,10 @@ const deleteCustomer = async (req, res) => {
     const { id } = req.params;
     const customer = await CustomerModel.findByIdAndRemove(id);
     return !customer
-      ? res.status(404).json("There is no customer with this ID.")
-      : res.status(200).json("Delete Successfully");
+      ? res.status(404).send("There is no customer with this ID.")
+      : res.status(200).send("Delete Successfully");
   } catch (error) {
-    res.status(400).json(error.message);
+    res.status(400).send(error.message);
   }
 };
 

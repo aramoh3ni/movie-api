@@ -8,29 +8,29 @@ module.exports = {
       const user = await UserModel.findById(req.user._id).select(
         "-password -__v"
       );
-      res.status(200).json(user);
+      res.status(200).send(user);
     } catch (error) {
-      res.status(400).json("An Authorized User");
+      res.status(400).send("An Authorized User");
     }
   },
   getUsers: async (req, res) => {
     try {
       const users = await UserModel.find().select("-password -__v");
       return !users
-        ? res.status(404).json("No Value")
-        : res.status(200).json(users);
+        ? res.status(404).send("No Value")
+        : res.status(200).send(users);
     } catch (error) {
-      res.status(500).json(error.message);
+      res.status(500).send(error.message);
     }
   },
   getUserById: async (req, res) => {},
   setUser: async (req, res) => {
     try {
       const { error } = validateUser(req.body);
-      if (error) return res.status(400).json(error.details[0].message);
+      if (error) return res.status(400).send(error.details[0].message);
 
       const userExists = await UserModel.findOne({ email: req.body.email });
-      if (userExists) return res.status(400).json("User already Exists");
+      if (userExists) return res.status(400).send("User already Exists");
 
       let user = new UserModel(
         _.pick(req.body, [
@@ -51,9 +51,9 @@ module.exports = {
       res
         .status(201)
         .header("x-auth-token", token)
-        .json(_.pick(user, ["firstName", "lastName", "email"]));
+        .send(_.pick(user, ["firstName", "lastName", "email"]));
     } catch (error) {
-      res.status(500).json(error.message);
+      res.status(500).send(error.message);
     }
   },
   delettUser: async (req, res) => {},

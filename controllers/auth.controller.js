@@ -5,21 +5,23 @@ module.exports = {
   authUser: async (req, res) => {
     try {
       const { error } = validateAuth(req.body);
-      if (error) return res.status(400).json(error.details[0].message);
+      if (error) return res.status(400).send(error.details[0].message);
 
       let user = await UserModel.findOne({ email: req.body.email });
-      if (!user) return res.status(400).json("Invalid Email or Password");
+      if (!user) return res.status(400).send("Invalid Email or Password");
 
       const validPassword = await bcrypt.compare(
         req.body.password,
         user.password
       );
       if (!validPassword)
-        return res.status(400).json("Invalid Email or Password.");
+        return res.status(400).send("Invalid Email or Password.");
 
-      res.status(200).json(user.genAuthToken());
+      const token = user.genAuthToken();
+
+      res.status(200).header("x-auth-token", token).send(token);
     } catch (error) {
-      res.status(500).json(error.message);
+      res.status(500).send(error.message);
     }
   },
 };

@@ -6,9 +6,9 @@ async function getMovies(req, res) {
     const movies = await MovieModel.find().sort("name");
     return !movies
       ? res.status(404).send("No Value.")
-      : res.status(200).json(movies);
+      : res.status(200).send(movies);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 }
 
@@ -20,7 +20,7 @@ async function getMovieById(req, res) {
       ? res.status(404).send("Not Value.")
       : res.status(200).send(movie);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 }
 
@@ -35,7 +35,7 @@ async function setMovie(req, res) {
       return res.status(400).send(`Item with ${req.body.title} name exists.`);
 
     const genre = await GenreModel.findById(req.body.genre);
-    if (!genre) return res.status(400).json("Invalid Genre");
+    if (!genre) return res.status(400).send("Invalid Genre");
 
     req.body.genre = {
       _id: genre._id,
@@ -47,7 +47,7 @@ async function setMovie(req, res) {
     await newMovie.save();
     return !newMovie
       ? res.status(400).send("Item not inserted!")
-      : res.status(201).json(newMovie);
+      : res.status(201).send(newMovie);
   } catch (err) {
     res.status(400).send(err.message);
   }
@@ -60,7 +60,7 @@ async function updateMovie(req, res) {
     if (error) return res.status(400).send(error.details[0].message);
 
     const genre = await GenreModel.findById(req.body.genreId);
-    if (!genre) return res.status(404).json("Invalid Genre");
+    if (!genre) return res.status(404).send("Invalid Genre");
 
     req.body.genre = {
       _id: genre._id,
@@ -73,7 +73,7 @@ async function updateMovie(req, res) {
 
     return !movie
       ? res.status(400).send("Update faild.")
-      : res.status(201).json("Update Successfully.");
+      : res.status(201).send("Update Successfully.");
   } catch (err) {
     res.status(400).send(err.message);
   }
@@ -87,7 +87,7 @@ async function deleteMovie(req, res) {
       ? res.status(400).send(`Item with id not exists.`)
       : res.status(200).send("Delete Successfuly.");
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 }
 

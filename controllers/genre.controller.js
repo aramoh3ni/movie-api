@@ -6,10 +6,10 @@ const getGenre = async (req, res) => {
   try {
     const genres = await GenreModel.find().sort({ name: 1 });
     return !genres
-      ? res.status(404).json("No Value.")
-      : res.status(200).json(genres);
+      ? res.status(404).send("No Value.")
+      : res.status(200).send(genres);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 };
 
@@ -18,20 +18,20 @@ const getGenreById = async (req, res) => {
   try {
     const genre = await GenreModel.findById(id);
     return !genre
-      ? res.status(404).json("Not Found!")
-      : res.status(200).json(genre);
+      ? res.status(404).send("Not Found!")
+      : res.status(200).send(genre);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 };
 
 const setGenre = async (req, res) => {
   try {
     const { error } = validateGenre(req.body);
-    if (error) return res.status(400).json(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const genreExists = await GenreModel.findOne({ name: req.body.name });
-    if (genreExists) return res.status(400).json("Item Exists");
+    if (genreExists) return res.status(400).send("Item Exists");
 
     const genre = new GenreModel({
       name: req.body.name,
@@ -39,17 +39,17 @@ const setGenre = async (req, res) => {
 
     const result = await genre.save();
     return !result
-      ? res.status(400).json("Item not Insert")
-      : res.status(201).json(result);
+      ? res.status(400).send("Item not Insert")
+      : res.status(201).send(result);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 };
 const updateGenre = async (req, res) => {
   try {
     const { id } = req.params;
     const { error } = validateGenre(req.body);
-    if (error) return res.status(400).json(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     // Update all Movies with current genre id
     const movie = await MovieModel.updateMany(
@@ -57,7 +57,7 @@ const updateGenre = async (req, res) => {
       { "genre.name": req.body.name },
       { new: true }
     );
-    if(!movie.acknowledged) return res.status(400).json("Movie collection Update faild.")
+    if(!movie.acknowledged) return res.status(400).send("Movie collection Update faild.")
     
     // Update Genre
     const genre = await GenreModel.findByIdAndUpdate(
@@ -66,10 +66,10 @@ const updateGenre = async (req, res) => {
       { new: true }
     );
     return !genre
-      ? res.status(404).json("The genre with the given ID was not found.")
-      : res.status(201).json(genre);
+      ? res.status(404).send("The genre with the given ID was not found.")
+      : res.status(201).send(genre);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 };
 
@@ -78,11 +78,11 @@ const deleteGenre = async (req, res) => {
     const { id } = req.params;
     const genre = await GenreModel.findByIdAndRemove(id);
     if (!genre)
-      return res.status(404).json("The genre with the given ID was not found.");
+      return res.status(404).send("The genre with the given ID was not found.");
 
-    res.status(200).json("Genre Deleted Successfully.");
+    res.status(200).send("Genre Deleted Successfully.");
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 };
 

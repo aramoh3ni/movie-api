@@ -25,10 +25,15 @@ const userSchema = new mongoose.Schema({
 
 // methods
 userSchema.methods.genAuthToken = function () {
-  return jwt.sign(
-    { _id: this._id, isAdmin: this.isAdmin },
-    process.env.TOKEN_SECERT
-  );
+  const payload = { _id: this._id, isAdmin: this.isAdmin };
+  const secret = process.env.TOKEN_SECERT;
+  const options = {
+    expiresIn: "1hr",
+    issuer: "pickurapage.com",
+    audience: `${this._id}`,
+  };
+  const token = jwt.sign(payload, secret, options);
+  return token
 };
 
 const UserModel = mongoose.model("User", userSchema);
@@ -44,7 +49,13 @@ const validateUser = (user) =>
       .min(5)
       .max(255)
       .label("Email Address"),
-    password: Joi.string().min(6).max(1024).required(),
+    password: Joi.string()
+      .min(6)
+      .max(1024)
+      .pattern(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      )
+      .required(),
   }).validate(user);
 
 module.exports = {

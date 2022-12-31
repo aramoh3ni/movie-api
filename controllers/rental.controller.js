@@ -11,10 +11,10 @@ const getRentals = async (req, res) => {
   try {
     const rentals = await RentalModel.find().sort("-outDate");
     return !rentals
-      ? res.status(404).json("No Value")
-      : res.status(200).json(rentals);
+      ? res.status(404).send("No Value")
+      : res.status(200).send(rentals);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 };
 
@@ -23,10 +23,10 @@ const getRentalById = async (req, res) => {
     const { id } = req.params;
     const rental = await RentalModel.findById(id);
     return !rental
-      ? res.status(400).json("Invalid Rental.")
-      : res.status(200).json(rental);
+      ? res.status(400).send("Invalid Rental.")
+      : res.status(200).send(rental);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 };
 
@@ -34,12 +34,12 @@ const setRental = async (req, res) => {
   try {
     const { customerId, movieId } = req.body;
     const { error } = validateRental({ customerId, movieId });
-    if (error) return res.status(400).json(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const customer = await CustomerModel.findById(customerId);
-    if (!customer) return res.status(400).json("Invalid Customer.");
+    if (!customer) return res.status(400).send("Invalid Customer.");
     const movie = await MovieModel.findById(movieId);
-    if (!movie) return res.status(400).json("Invalid Movie.");
+    if (!movie) return res.status(400).send("Invalid Movie.");
 
     let rental = new RentalModel({
       customer: {
@@ -72,10 +72,10 @@ const setRental = async (req, res) => {
     // await movie.save();
 
     return !rental
-      ? res.status(400).json("Invalid Rental Object")
-      : res.status(201).json(rental);
+      ? res.status(400).send("Invalid Rental Object")
+      : res.status(201).send(rental);
   } catch (err) {
-    res.status(400).json(err.message);
+    res.status(400).send(err.message);
   }
 };
 
