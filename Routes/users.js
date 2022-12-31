@@ -10,15 +10,16 @@ const {
   getUserById,
   setUser,
   delettUser,
-  updattUser,
+  updateMe,
+  deleteMe,
 } = require("../controllers/user.controller");
 
 // ROUTES
 router.get("/me", auth, getMe);
+router.put("/me", auth, updateMe);
+router.delete("/me", auth, deleteMe);
 router.get("/", auth, isAdmin, getUsers);
 router.get("/:id", auth, isAdmin, getUserById);
-router.post("/", auth, setUser);
-router.put("/:id", auth, isAdmin, updattUser);
-router.delete("/:id", auth, isAdmin, delettUser);
+router.post("/", setUser);
 
 module.exports = router;

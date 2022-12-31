@@ -11,7 +11,7 @@ module.exports = {
       let user = await UserModel.findOne({ email });
       if (!user) return res.status(400).send("Invalid Email or Password.");
 
-      const isMatch = user.isValidPassword(password);
+      const isMatch = await bcrypt.compare(password, user.password);
       if(!isMatch) return res.status(401).send("Invalid Email or Password");
 
       const token = user.genAuthToken();
@@ -31,5 +31,10 @@ const validateAuth = (user) =>
       .min(5)
       .max(255)
       .label("Email Address"),
-    password: Joi.string().required(),
+      password: Joi.string()
+      .min(6)
+      .max(1024)
+      .pattern(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      ).required(),
   }).validate(user);

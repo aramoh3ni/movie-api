@@ -20,7 +20,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
     maxlength: 1024,
+    disable: Boolean,
   },
+  disable: Boolean,
   isAdmin: Boolean,
 });
 
@@ -29,7 +31,7 @@ userSchema.methods.genAuthToken = function () {
   const payload = { _id: this._id, isAdmin: this.isAdmin };
   const secret = process.env.ACCESS_TOKEN_SECERT;
   const options = {
-    expiresIn: "1hr",
+    expiresIn: "1d",
     issuer: "aramoh3ni.netlify.app",
     audience: `${this._id}`,
   };
@@ -37,7 +39,7 @@ userSchema.methods.genAuthToken = function () {
   return token;
 };
 
-userSchema.methods.isValidPassword = async function (password, next) {
+userSchema.methods.isValidPassword = async function (password) {
   try {
     return await bcrypt.compare(password, this.password);
   } catch (error) {
