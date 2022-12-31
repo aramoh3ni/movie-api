@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const mongoose = require("mongoose");
@@ -33,8 +34,20 @@ userSchema.methods.genAuthToken = function () {
     audience: `${this._id}`,
   };
   const token = jwt.sign(payload, secret, options);
-  return token
+  return token;
 };
+
+userSchema.pre("save", async function (next) {
+  try {
+    const salt = await bcrypt.genSalt(15);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword;
+    next();
+  } catch (error) {
+    console.log(error.message);
+    return;
+  }
+});
 
 const UserModel = mongoose.model("User", userSchema);
 
