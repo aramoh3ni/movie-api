@@ -1,14 +1,7 @@
 const Joi = require("joi");
 const mongoos = require("mongoose");
 
-const getCode = (name) => {
-  formatedCode = `${name}_${new Date().getFullYear()}_${new Date().getMonth()}_${Math.floor(
-    Math.random() * 1000
-  )}`;
-  return formatedCode;
-};
-
-const customerSchema = mongoos.Schema({
+const customerSchema = new mongoos.Schema({
   firstName: { type: String, required: true, trim: true, maxlength: 60 },
   lastName: {
     type: String,
@@ -18,12 +11,7 @@ const customerSchema = mongoos.Schema({
     trim: true,
     maxlength: 60,
   },
-  code: {
-    type: String,
-    required: true,
-    default: function() { return getCode(this.firstName)},
-    unique: true,
-  },
+  code: String,
   birthYear: { type: Number, min: 1980, max: 2014 },
   isGold: { type: Boolean, default: false },
   phone: {
@@ -36,6 +24,20 @@ const customerSchema = mongoos.Schema({
   },
   intersts: { type: Array, of: String },
   location: String,
+});
+
+customerSchema.pre("save", async function (next) {
+  try {
+    const formatedCode = `${
+      this.lastName
+    }_${new Date().getFullYear()}_${new Date().getMonth()}_${Math.floor(
+      Math.random() * 1000
+    )}`;
+    this.code = formatedCode;
+    next();
+  } catch (exception) {
+    next(exception);
+  }
 });
 
 const validateCustomer = (customer) => {
@@ -58,7 +60,7 @@ const validateCustomer = (customer) => {
     location: Joi.string().trim().lowercase().label("Location"),
   }).validate(customer);
 };
-const CustomerModel = new mongoos.model("Customer", customerSchema);
+const CustomerModel = mongoos.model("Customer", customerSchema);
 
 module.exports = {
   CustomerModel,

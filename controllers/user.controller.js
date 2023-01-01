@@ -45,23 +45,7 @@ module.exports = {
     if (error) return res.status(400).send(error.details[0].message);
 
     const userExists = await UserModel.findOne({ email: req.body.email });
-    if (userExists.disable && userExists.disable === true) {
-      await userExists.updateOne(
-        {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          disable: false,
-        },
-        { new: true }
-      );
-      const token = userExists.genAuthToken();
-      return res
-        .status(201)
-        .header("x-auth-token", token)
-        .send(_.pick(userExists, ["firstName", "lastName", "email"]));
-    }
-    if (userExists && !userExists.disable)
-      return res.status(400).send("User already Exists");
+    if (userExists) return res.status(400).send("User already Exists");
 
     let user = new UserModel(
       _.pick(req.body, ["firstName", "lastName", "email", "password"])

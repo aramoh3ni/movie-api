@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { auth, isAdmin, tryc } = require("../middleware");
+const { auth, isAdmin, tryc, validateObjectId } = require("../middleware");
 
 
 // CONTROLLERS
@@ -15,9 +15,9 @@ const {
 
 // ROUTES
 router.get("/", auth, tryc(getGenre));
-router.get("/:id", auth, tryc(getGenreById));
+router.get("/:id", auth, validateObjectId, tryc(getGenreById));
 router.post("/", auth, isAdmin, tryc(setGenre));
-router.put("/:id", auth, isAdmin, tryc(updateGenre));
-router.delete("/:id", auth, isAdmin, tryc(deleteGenre));
+router.put("/:id", auth, isAdmin, validateObjectId, tryc(updateGenre));
+router.delete("/:id", auth, isAdmin, validateObjectId, tryc(deleteGenre));
 
 module.exports = router;

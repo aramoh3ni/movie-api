@@ -1,18 +1,19 @@
 // MODELS
 const { CustomerModel, validateCustomer } = require("../models/customer.model");
+const createError = require("http-errors");
 
 const getCutomers = async (req, res) => {
-  const customers = await CustomerModel.find().sort("firstName");
-  return !customers
-    ? res.status(404).send("No Value.")
-    : res.status(200).send(customers);
+  const customers = await CustomerModel.find().select("-__v").sort("firstName");
+  throw !customers
+    ? createError.NotFound("There is no Customer")
+    : res.status(200).send({ data: customers });
 };
 const getCutomerById = async (req, res) => {
   const { id } = req.params;
   const customer = await CustomerModel.findById(id);
-  return !customer
-    ? res.status(404).send("No Value.")
-    : res.status(200).send(customer);
+  throw !customer
+    ? createError.NotFound("There is no Customer")
+    : res.status(200).send({data: customer});
 };
 const setCustomer = async (req, res) => {
   const { error } = validateCustomer(req.body);

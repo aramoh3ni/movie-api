@@ -1,21 +1,31 @@
-const bcrypt = require("bcrypt");
+const _ = require("lodash");
+const createError = require("http-errors");
 const Joi = require("joi");
 const { UserModel } = require("../models/users.model");
+
+const { login } = require("../constants/message");
+
 module.exports = {
   authUser: async (req, res) => {
-      const { email, password } = req.body;
-      const { error } = validateAuth({ email, password });
-      if (error) return res.status(400).send("Invalid Email or Password.");
+    const { email, password } = req.body;
+    const { error } = validateAuth({ email, password });
+    if (error) throw createError.BadRequest(login[400]);
 
-      let user = await UserModel.findOne({ email });
-      if (!user) return res.status(400).send("Invalid Email or Password.");
+    let user = await UserModel.findOne({ email }).select(
+      "-__v"
+    );
+    if (!user) throw createError.BadRequest(login[400]);
 
-      const isMatch = await bcrypt.compare(password, user.password);
-      if(!isMatch) return res.status(401).send("Invalid Email or Password");
+    const isMatch = await user.isValidPassword(password);
+    if (!isMatch) throw createError.BadRequest(login[400]);
 
-      const token = user.genAuthToken();
+    const token = user.genAuthToken();
 
-      res.status(200).header("x-auth-token", token).send(token);
+    res.status(200).header("x-auth-token", token).send({
+      message: login[200],
+      token,
+      data: _.pick(user, ['firstName', 'lastName', 'email']),
+    });
   },
 };
 
@@ -27,10 +37,11 @@ const validateAuth = (user) =>
       .min(5)
       .max(255)
       .label("Email Address"),
-      password: Joi.string()
+    password: Joi.string()
       .min(6)
       .max(1024)
       .pattern(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-      ).required(),
+      )
+      .required(),
   }).validate(user);

@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const { auth, isAdmin } = require("../middleware");
+const { auth, isAdmin, tryc, validateObjectId } = require("../middleware");
 
 // CONTROLLERS
 const {
@@ -11,10 +11,10 @@ const {
   deleteCustomer,
 } = require("../controllers/customer.controller");
 
-router.get("/", auth, getCutomers);
-router.get("/:id", auth, getCutomerById);
-router.post("/", auth, isAdmin, setCustomer);
-router.put("/:id", auth, isAdmin, updateCustomer);
-router.delete("/:id", auth, isAdmin, deleteCustomer);
+router.get("/", auth, tryc(getCutomers));
+router.get("/:id", validateObjectId, auth, tryc(getCutomerById));
+router.post("/", auth, isAdmin, tryc(setCustomer));
+router.put("/:id", validateObjectId, auth, isAdmin, tryc(updateCustomer));
+router.delete("/:id", validateObjectId, auth, isAdmin, tryc(deleteCustomer));
 
 module.exports = router;

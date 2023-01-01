@@ -42,8 +42,8 @@ userSchema.methods.genAuthToken = function () {
 userSchema.methods.isValidPassword = async function (password) {
   try {
     return await bcrypt.compare(password, this.password);
-  } catch (error) {
-    throw error;
+  } catch (exeption) {
+    throw exeption
   }
 };
 
@@ -53,8 +53,8 @@ userSchema.pre("save", async function (next) {
     const hashedPassword = await bcrypt.hash(this.password, salt);
     this.password = hashedPassword;
     next();
-  } catch (error) {
-    throw error.message;
+  } catch (exception) {
+    next(exception);
   }
 });
 
@@ -78,7 +78,10 @@ const validateUser = (user) =>
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
       )
       .required(),
-  }).validate(user);
+    repeat_password: Joi.ref("password"),
+  })
+    .with("password", "repeat_password")
+    .validate(user);
 
 module.exports = {
   UserModel,
