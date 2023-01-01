@@ -51,6 +51,11 @@ app.use("/api/customers", customers);
 app.use("/api/rentals", rentals);
 app.use("/", home);
 
+// Error Handler 
+app.use(function(err, req, res, next) {
+  res.status(500).send(err)
+})
+
 app.listen(PORT, (err) => {
   if (err) console.log(`Connection: ${err}`);
   else console.log(`Server is listening on PORT ${PORT} 🚀`);

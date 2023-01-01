@@ -2,14 +2,14 @@
 const { GenreModel, validateGenre } = require("../models/genre.model");
 const { MovieModel } = require("../models/movie.model");
 
-const getGenre = async (req, res) => {
+const getGenre = async (req, res, next) => {
   try {
     const genres = await GenreModel.find().sort({ name: 1 });
     return !genres
       ? res.status(404).send("No Value.")
       : res.status(200).send(genres);
   } catch (err) {
-    res.status(400).send(err.message);
+    next(err.message);
   }
 };
 
@@ -57,8 +57,9 @@ const updateGenre = async (req, res) => {
       { "genre.name": req.body.name },
       { new: true }
     );
-    if(!movie.acknowledged) return res.status(400).send("Movie collection Update faild.")
-    
+    if (!movie.acknowledged)
+      return res.status(400).send("Movie collection Update faild.");
+
     // Update Genre
     const genre = await GenreModel.findByIdAndUpdate(
       id,
