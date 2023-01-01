@@ -8,3 +8,7 @@ node_modules/
 
 # logging files
 *.log
+
+
+## tesing files
+*.http
