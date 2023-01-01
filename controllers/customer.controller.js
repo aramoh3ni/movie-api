@@ -2,24 +2,27 @@
 const { CustomerModel, validateCustomer } = require("../models/customer.model");
 const createError = require("http-errors");
 
+const { messages } = require("../constants/message");
+const msg = messages("Customer");
+
 const getCutomers = async (req, res) => {
   const customers = await CustomerModel.find().select("-__v").sort("firstName");
   throw !customers
-    ? createError.NotFound("There is no Customer")
+    ? createError.NotFound(msg.not_found)
     : res.status(200).send({ data: customers });
 };
 const getCutomerById = async (req, res) => {
   const { id } = req.params;
   const customer = await CustomerModel.findById(id);
   throw !customer
-    ? createError.NotFound("There is no Customer")
-    : res.status(200).send({data: customer});
+    ? createError.NotFound(msg.not_found)
+    : res.status(200).send({ data: customer });
 };
 const setCustomer = async (req, res) => {
   const { error } = validateCustomer(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) throw createError.BadRequest(error.details[0].message);
 
-  const newCustomer = new CustomerModel({
+  let customer = new CustomerModel({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     birthYear: req.body.birthYear,
@@ -27,15 +30,15 @@ const setCustomer = async (req, res) => {
     location: req.body.location,
   });
 
-  const result = await newCustomer.save();
-  return !result
-    ? res.status(400).send("Item not inserted!")
-    : res.status(201).send(result);
+  customer = await customer.save();
+  throw !customer
+    ? createError.BadRequest(msg.create_error)
+    : res.status(201).send({ message: msg.create, data: customer });
 };
 const updateCustomer = async (req, res) => {
   const { id } = req.params;
   const { error } = validateCustomer(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) throw createError.BadRequest(error.details[0].message);
 
   let customer = await CustomerModel.findByIdAndUpdate(
     id,
@@ -52,16 +55,16 @@ const updateCustomer = async (req, res) => {
       new: true,
     }
   );
-  return !customer
-    ? res.status(400).send("There is no customer with current ID.")
-    : res.status(201).send(customer);
+  throw !customer
+    ? createError.NotFound(msg.update_error)
+    : res.status(201).send({ message: msg.update, data: customer });
 };
 const deleteCustomer = async (req, res) => {
   const { id } = req.params;
   const customer = await CustomerModel.findByIdAndRemove(id);
-  return !customer
-    ? res.status(404).send("There is no customer with this ID.")
-    : res.status(200).send("Delete Successfully");
+  throw !customer
+    ? createError.NotFound(msg.delete_error)
+    : res.status(200).send(msg.delete);
 };
 
 module.exports = {

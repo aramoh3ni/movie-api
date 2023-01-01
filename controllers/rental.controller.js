@@ -1,31 +1,35 @@
+const createError = require("http-errors");
 const { RentalModel, validateRental } = require("../models/rental.model");
 const { CustomerModel } = require("../models/customer.model");
 const { MovieModel } = require("../models/movie.model");
+const { messages } = require("../constants/message");
+const msg = messages("Rental");
 
 const getRentals = async (req, res) => {
   const rentals = await RentalModel.find().sort("-outDate");
-  return !rentals
-    ? res.status(404).send("No Value")
-    : res.status(200).send(rentals);
+  throw !rentals
+    ? createError.NotFound(msg.not_found)
+    : res.status(200).json({ data: rentals });
 };
 
 const getRentalById = async (req, res) => {
   const { id } = req.params;
   const rental = await RentalModel.findById(id);
-  return !rental
-    ? res.status(400).send("Invalid Rental.")
-    : res.status(200).send(rental);
+  throw !rental
+    ? createError.NotFound(msg.not_found)
+    : res.status(200).json({ data: rental });
 };
 
 const setRental = async (req, res) => {
   const { customerId, movieId } = req.body;
   const { error } = validateRental({ customerId, movieId });
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) throw createError.BadRequest(error.details[0].message);
 
   const customer = await CustomerModel.findById(customerId);
-  if (!customer) return res.status(400).send("Invalid Customer.");
+  if (!customer) throw createError.NotFound(messages("Customer").not_found);
+
   const movie = await MovieModel.findById(movieId);
-  if (!movie) return res.status(400).send("Invalid Movie.");
+  if (!movie) throw createError.NotFound(msg.not_found);
 
   let rental = new RentalModel({
     customer: {
@@ -46,9 +50,9 @@ const setRental = async (req, res) => {
   movie.numberInStock--;
   await movie.save();
 
-  return !rental
-    ? res.status(400).send("Invalid Rental Object")
-    : res.status(201).send(rental);
+  throw !rental
+    ? createError.BadRequest(msg.create_error)
+    : res.status(201).json({ data: rental, message: msg.create });
 };
 
 module.exports = { getRentalById, getRentals, setRental };

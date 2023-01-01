@@ -4,8 +4,7 @@
   "description": "Movie-api build with Node.js, Express and mongodb, mongoose ORM",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",

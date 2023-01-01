@@ -1,64 +1,70 @@
+const createError = require("http-errors");
 // MODEL & VALIDATION
 const { GenreModel, validateGenre } = require("../models/genre.model");
 const { MovieModel } = require("../models/movie.model");
 
+const { messages } = require("../constants/message");
+const msg = messages("Genre");
+
 const getGenre = async (req, res) => {
   const genres = await GenreModel.find().sort({ name: 1 });
-  res.status(200).send(genres);
+  throw !getGenre
+    ? createError.NotFound(msg.not_found)
+    : res.status(200).json({ data: genres });
 };
 
 const getGenreById = async (req, res) => {
   const { id } = req.params;
   const genre = await GenreModel.findById(id);
-  return !genre
-    ? res.status(404).send("The genre with the given ID was not found.")
-    : res.status(201).send(genre);
+  throw !genre
+    ? createError.NotFound(msg.not_found)
+    : res.status(201).json({ data: genre });
 };
 
 const setGenre = async (req, res) => {
   const { error } = validateGenre(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) throw createError.BadRequest(error.details[0].message);
 
   const genreExists = await GenreModel.findOne({ name: req.body.name });
-  if (genreExists) res.status(400).send("Item Exists");
+  if (genreExists) throw createError.BadRequest(msg.item_exists);
 
   let genre = new GenreModel({
     name: req.body.name,
   });
 
   genre = await genre.save();
-  res.status(201).send(genre);
+  throw !genre
+    ? createError.BadRequest(msg.create_error)
+    : res.status(201).json({ data: genre, message: msg.create });
 };
 const updateGenre = async (req, res) => {
   const { id } = req.params;
   const { error } = validateGenre(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) throw createError.BadRequest(error.details[0].message);
 
   const movie = await MovieModel.updateMany(
     { "genre._id": id },
     { "genre.name": req.body.name },
     { new: true }
   );
-  if (!movie.acknowledged)
-    return res.status(400).send("Movie collection Update faild.");
+  if (!movie.acknowledged) throw createError.BadRequest(msg.update_error);
 
   const genre = await GenreModel.findByIdAndUpdate(
     id,
     { name: req.body.name },
     { new: true }
   );
-  return !genre
-    ? res.status(404).send("The genre with the given ID was not found.")
-    : res.status(201).send(genre);
+  throw !genre
+    ? createError.NotFound(msg.not_found)
+    : res.status(201).json({ data: genre, message: msg.update });
 };
 
 const deleteGenre = async (req, res) => {
   const { id } = req.params;
   const genre = await GenreModel.findByIdAndRemove(id);
-  if (!genre)
-    return res.status(404).send("The genre with the given ID was not found.");
-
-  res.status(200).send("Genre Deleted Successfully.");
+  throw !genre
+    ? createError.NotFound(msg.delete_error)
+    : res.status(200).json(msg.delete);
 };
 
 module.exports = {

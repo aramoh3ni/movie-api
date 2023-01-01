@@ -3,26 +3,26 @@ const createError = require("http-errors");
 const Joi = require("joi");
 const { UserModel } = require("../models/users.model");
 
-const { login } = require("../constants/message");
+const { login_msgs } = require("../constants/message");
 
 module.exports = {
   authUser: async (req, res) => {
     const { email, password } = req.body;
     const { error } = validateAuth({ email, password });
-    if (error) throw createError.BadRequest(login[400]);
+    if (error) throw createError.BadRequest(login_msgs.error);
 
     let user = await UserModel.findOne({ email }).select(
       "-__v"
     );
-    if (!user) throw createError.BadRequest(login[400]);
+    if (!user) throw createError.BadRequest(login_msgs.error);
 
     const isMatch = await user.isValidPassword(password);
-    if (!isMatch) throw createError.BadRequest(login[400]);
+    if (!isMatch) throw createError.BadRequest(login_msgs.error);
 
     const token = user.genAuthToken();
 
     res.status(200).header("x-auth-token", token).send({
-      message: login[200],
+      message: login_msgs.success,
       token,
       data: _.pick(user, ['firstName', 'lastName', 'email']),
     });

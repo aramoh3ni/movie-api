@@ -1,32 +1,35 @@
+const createError = require("http-errors");
 const { GenreModel } = require("../models/genre.model");
 const { MovieModel, validateMovie } = require("../models/movie.model");
 
+const { messages } = require("../constants/message");
+const msg = messages("Movie");
+
 async function getMovies(req, res) {
   const movies = await MovieModel.find().sort("name");
-  return !movies
-    ? res.status(404).send("No Value.")
-    : res.status(200).send(movies);
+  throw !movies
+    ? createError.BadRequest(msg.not_found)
+    : res.status(200).json({ data: movies });
 }
 
 async function getMovieById(req, res) {
   const { id } = req.params;
   const movie = await MovieModel.findById(id);
   return !movie
-    ? res.status(404).send("Not Value.")
-    : res.status(200).send(movie);
+    ? res.status(404).json("Not Value.")
+    : res.status(200).json(movie);
 }
 
 async function setMovie(req, res) {
   const { id } = req.params;
   const { error } = validateMovie(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) throw createError.BadRequest(error.details[0].message);
 
   const movie = await MovieModel.findById(id);
-  if (movie)
-    return res.status(400).send(`Item with ${req.body.title} name exists.`);
+  if (movie) throw createError.NotAcceptable(msg.item_exists);
 
   const genre = await GenreModel.findById(req.body.genre);
-  if (!genre) return res.status(400).send("Invalid Genre");
+  if (!genre) throw createError.NotFound(messages("Genre").not_found);
 
   req.body.genre = {
     _id: genre._id,
@@ -36,18 +39,18 @@ async function setMovie(req, res) {
   let newMovie = new MovieModel(req.body);
 
   await newMovie.save();
-  return !newMovie
-    ? res.status(400).send("Item not inserted!")
-    : res.status(201).send(newMovie);
+  throw !newMovie
+    ? createError.BadRequest(msg.create_error)
+    : res.status(201).json({ data: newMovie, message: msg.create });
 }
 
 async function updateMovie(req, res) {
   const { id } = req.params;
   const { error } = validateMovie(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) throw createError.BadRequest(error.details[0].message);
 
   const genre = await GenreModel.findById(req.body.genreId);
-  if (!genre) return res.status(404).send("Invalid Genre");
+  if (!genre) throw createError.NotFound(messages("Genere").not_found);
 
   req.body.genre = {
     _id: genre._id,
@@ -58,17 +61,17 @@ async function updateMovie(req, res) {
     new: true,
   });
 
-  return !movie
-    ? res.status(400).send("Update faild.")
-    : res.status(201).send("Update Successfully.");
+  throw !movie
+    ? createError.BadRequest(msg.update_error)
+    : res.status(200).json({ data: movie, message: msg.update });
 }
 
 async function deleteMovie(req, res) {
   const { id } = req.params;
-  const result = await MovieModel.findByIdAndDelete(id);
-  return result
-    ? res.status(400).send(`Item with id not exists.`)
-    : res.status(200).send("Delete Successfuly.");
+  const movie = await MovieModel.findByIdAndDelete(id);
+  throw movie
+    ? createError.BadRequest(msg.delete_error)
+    : res.status(200).json({ message: msg.delete });
 }
 
 module.exports = {

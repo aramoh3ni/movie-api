@@ -1,17 +1,23 @@
+const createError = require("http-errors");
 const Joi = require("joi");
 const _ = require("lodash");
 const { UserModel, validateUser } = require("../models/users.model");
+
+const msg = require("../constants/message").messages("User");
 
 module.exports = {
   getMe: async (req, res) => {
     const user = await UserModel.findById(req.user._id).select(
       "-password -__v"
     );
-    res.status(200).send(user);
+    throw !user
+      ? createError.NotFound(msg.not_found)
+      : res.status(200).json({ data: user });
   },
+
   updateMe: async (req, res) => {
     const { error } = validateMe(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) throw createError.BadRequest(error.details[0].message);
 
     user = await UserModel.findByIdAndUpdate(
       req.user._id,
@@ -23,39 +29,44 @@ module.exports = {
       },
       { new: true }
     );
-    if (!user) return res.status(400).send("Invalid Account.");
-
-    res.status(200).send(user);
+    throw !user
+      ? createError.BadRequest(msg.update_error)
+      : res.status(200).json({ data: user, message: msg.update });
   },
   getUsers: async (req, res) => {
     const users = await UserModel.find().select("-password -__v");
     return !users
-      ? res.status(404).send("No Value")
-      : res.status(200).send(users);
+      ? createError.NotFound(msg.not_found)
+      : res.status(200).json({ data: users });
   },
   getUserById: async (req, res) => {
     const { id } = req.params;
     const user = await UserModel.findById(id);
-    if (!user) return res.status(404).send("User Not Found.");
-
-    res.status(200).send(user);
+    throw !user
+      ? createError.NotFound(msg.not_found)
+      : res.status(200).json({ data: user });
   },
   setUser: async (req, res) => {
     const { error } = validateUser(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) throw createError.BadRequest(error.details[0].message);
 
     const userExists = await UserModel.findOne({ email: req.body.email });
-    if (userExists) return res.status(400).send("User already Exists");
+    if (userExists) throw createError.BadRequest(msg.item_exists);
 
     let user = new UserModel(
       _.pick(req.body, ["firstName", "lastName", "email", "password"])
     );
     user = await user.save();
     const token = user.genAuthToken();
-    res
-      .status(201)
-      .header("x-auth-token", token)
-      .send(_.pick(user, ["firstName", "lastName", "email"]));
+    throw !user
+      ? createError.BadRequest(msg.create_error)
+      : res
+          .status(201)
+          .header("x-auth-token", token)
+          .json({
+            data: _.pick(user, ["firstName", "lastName", "email"]),
+            message: msg.create,
+          });
   },
 };
 
