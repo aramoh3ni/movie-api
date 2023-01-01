@@ -18,8 +18,8 @@ separates an application into three main logical components Model, View, and Con
      --------------------------------------------------------
     + Create Rental         (Admin Only)
     + Read   Rental         (Admin Only)
-    + Update Rental         (NOT_SUPPROT)
-    + Delete Rental         (NOT_SUPPORT)
+    - Update Rental         (NOT_SUPPROT)
+    - Delete Rental         (NOT_SUPPORT)
    
   ###### **3- Genre** 
       Operation             Access
@@ -34,12 +34,12 @@ separates an application into three main logical components Model, View, and Con
      --------------------------------------------------------
     + Create  User         (Everyone)
     + Read    User         (Authorized)
-      1- Read Profile      (Authorized) + (Admin) <sub> only can see his/her users.<sub />
+      1- Read Profile      (Authorized) + (Admin) # only can see his/her users.
       2- Read users        (Admin Only)
       3- Read user         (Admin Only)
     + Upddate User         (Authorized) + (Admin)
       1- Update Profile    (Authorized) + (Admin)
-    + Delete  User         (NOT SUPPORT)
+    - Delete  User         (NOT SUPPORT)
 
   ###### **5- Customer**
       Operation             Access
