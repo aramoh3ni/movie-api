@@ -1,9 +1,7 @@
 require("dotenv/config");
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
-// const debug = require('debug')('app:startup');
 const mongoose = require("mongoose").set("strictQuery", false);
-const morgan = require("morgan");
 const { error } = require("./middleware");
 // const logger = require("./middleware/logger");
 const express = require("express");
@@ -22,17 +20,7 @@ const home = require("./routes/main");
 // ENV VARIABLES
 const ENV = process.env.STATUS;
 const PORT = process.env.PORT || 3000;
-const DB_URL = process.env.HOST + process.env.DB;
-
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.static("public"));  // configuring static files.
-// app.use(logger);
-
-// SETUP ENV
-if (ENV === "development") {
-  app.use(morgan("dev"));
-  // debug("Morgan enabled...");
-}
+const DB_URL = process.env.HOST + process.env.MONGO_DB_NAME;
 
 // DATABASE SETUP
 mongoose

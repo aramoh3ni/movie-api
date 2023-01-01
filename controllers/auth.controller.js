@@ -3,7 +3,6 @@ const Joi = require("joi");
 const { UserModel } = require("../models/users.model");
 module.exports = {
   authUser: async (req, res) => {
-    try {
       const { email, password } = req.body;
       const { error } = validateAuth({ email, password });
       if (error) return res.status(400).send("Invalid Email or Password.");
@@ -17,9 +16,6 @@ module.exports = {
       const token = user.genAuthToken();
 
       res.status(200).header("x-auth-token", token).send(token);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
   },
 };
 

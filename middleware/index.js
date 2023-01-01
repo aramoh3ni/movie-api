@@ -1,5 +1,6 @@
 module.exports = {
   isAdmin: require("./admin"),
   auth: require("./auth"),
-  error: require("./error")
+  error: require("./error"),
+  tryc: require("./tryc"),
 };

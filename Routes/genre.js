@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-// const { auth, isAdmin } = require("../middleware");
+const { auth, isAdmin, tryc } = require("../middleware");
 
-const auth = require("../middleware/auth");
-const isAdmin = require("../middleware/admin")
 
 // CONTROLLERS
 const {
@@ -16,10 +14,10 @@ const {
 } = require("../controllers/genre.controller");
 
 // ROUTES
-router.get("/", auth, getGenre);
-router.get("/:id", auth, getGenreById);
-router.post("/", auth, isAdmin, setGenre);
-router.put("/:id", auth, isAdmin, updateGenre);
-router.delete("/:id", auth, isAdmin, deleteGenre);
+router.get("/", auth, tryc(getGenre));
+router.get("/:id", auth, tryc(getGenreById));
+router.post("/", auth, isAdmin, tryc(setGenre));
+router.put("/:id", auth, isAdmin, tryc(updateGenre));
+router.delete("/:id", auth, isAdmin, tryc(deleteGenre));
 
 module.exports = router;
