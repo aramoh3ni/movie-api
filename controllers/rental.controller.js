@@ -2,11 +2,6 @@ const { RentalModel, validateRental } = require("../models/rental.model");
 const { CustomerModel } = require("../models/customer.model");
 const { MovieModel } = require("../models/movie.model");
 
-// Initionalizing Transcation using Fawn library.
-// const Fawn = require("fawn");
-
-// Fawn.init(process.env.HOST + process.env.DB, "rentals");
-
 const getRentals = async (req, res) => {
   const rentals = await RentalModel.find().sort("-outDate");
   return !rentals
@@ -47,17 +42,6 @@ const setRental = async (req, res) => {
     },
   });
 
-  // new Fawn.Task()
-  //   .save("rentals", rental)
-  //   .update(
-  //     "movies",
-  //     { _id: movie._id },
-  //     {
-  //       $inc: { numberInStock: -1 },
-  //     }
-  //   )
-  //   .run();
-  // custome implementation
   await rental.save();
   movie.numberInStock--;
   await movie.save();
