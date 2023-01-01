@@ -5,51 +5,51 @@ separates an application into three main logical components Model, View, and Con
 
 # Models
 
-  1- Movie
-      Operation             Access
-      --------------------------------------------------------
-    * Create Movie          (Admin Only)
-    * Update Movie          (Admin Only)
-    * Read   Movie          (Everyone)
-    * Delete Movie          (Admin Only)
-    
-  2- Rental
-      Operation             Access
-     --------------------------------------------------------
-    * Create Rental         (Admin Only)
-    * Read   Rental         (Admin Only)
-    * Update Rental         (NOT_SUPPROT)
-    * Delete Rental         (NOT_SUPPORT)
-    
-  3- Genre
-      Operation             Access
-     --------------------------------------------------------
-    * Create  Genre         (Admin Only)
-    * Read    Genre         (Authorized) + (Admin)
-    * Upddate Genre         (Admin Only)
-    * Delete  Genre         (Admin Only)
-    
-  4- Users
-      Operation             Access
-     --------------------------------------------------------
-    * Create  User         (Everyone)
-    * Read    User         (Authorized)
-      1- Read Profile      (Authorized) + (Admin) // only can see his/her users.
-      2- Read users        (Admin Only)
-      3- Read user         (Admin Only)
-    * Upddate User         (Authorized) + (Admin)
-      1- Update Profile    (Authorized) + (Admin)
-    * Delete  User         (NOT SUPPORT)
-  
-  5- Customer
-      Operation             Access
-     --------------------------------------------------------
-    * Create  User         (Admin Only)
-    * Read    User         (Admin Only)
-    * Upddate User         (Admin Only)
-    * Delete  User         (Admin Only)
-    
-
+  *1- Movie* <br />
+      Operation             Access<br />
+      --------------------------------------------------------<br />
+    * Create Movie          (Admin Only)<br />
+    * Update Movie          (Admin Only)<br />
+    * Read   Movie          (Everyone)<br />
+    * Delete Movie          (Admin Only)<br />
+    <br />
+  *2- Rental* <br />
+      Operation             Access<br />
+     --------------------------------------------------------<br />
+    * Create Rental         (Admin Only)<br />
+    * Read   Rental         (Admin Only)<br />
+    * Update Rental         (NOT_SUPPROT)<br />
+    * Delete Rental         (NOT_SUPPORT)<br />
+    <br />
+  *3- Genre*<br />
+      Operation             Access<br />
+     --------------------------------------------------------<br />
+    * Create  Genre         (Admin Only)<br />
+    * Read    Genre         (Authorized) + (Admin)<br />
+    * Upddate Genre         (Admin Only)<br />
+    * Delete  Genre         (Admin Only)<br />
+    <br />
+  *4- User* <br />
+      Operation             Access<br />
+     --------------------------------------------------------<br />
+    * Create  User         (Everyone)<br />
+    * Read    User         (Authorized)<br />
+      1- Read Profile      (Authorized) + (Admin) // only can see his/her users.<br />
+      2- Read users        (Admin Only)<br />
+      3- Read user         (Admin Only)<br />
+    * Upddate User         (Authorized) + (Admin)<br />
+      1- Update Profile    (Authorized) + (Admin)<br />
+    * Delete  User         (NOT SUPPORT)<br />
+  <br />
+  *5- Customer* <br />
+      Operation             Access<br />
+     --------------------------------------------------------<br />
+    * Create  User         (Admin Only)<br />
+    * Read    User         (Admin Only)<br />
+    * Upddate User         (Admin Only)<br />
+    * Delete  User         (Admin Only)<br />
+    <br />
+<br />
 ## Usage
 
 Clone or Download the Repository into your machine, then enter comment bellow in your terminal.
