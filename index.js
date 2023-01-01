@@ -4,6 +4,7 @@ Joi.objectId = require("joi-objectid")(Joi);
 // const debug = require('debug')('app:startup');
 const mongoose = require("mongoose").set("strictQuery", false);
 const morgan = require("morgan");
+const { error } = require("./middleware");
 // const logger = require("./middleware/logger");
 const express = require("express");
 const app = express();
@@ -23,7 +24,6 @@ const ENV = process.env.STATUS;
 const PORT = process.env.PORT || 3000;
 const DB_URL = process.env.HOST + process.env.DB;
 
-
 // app.use(express.urlencoded({ extended: true }));
 // app.use(express.static("public"));  // configuring static files.
 // app.use(logger);
@@ -36,9 +36,9 @@ if (ENV === "development") {
 
 // DATABASE SETUP
 mongoose
-.connect(DB_URL)
-.then(() => console.log(`Connected to Database`))
-.catch((err) => console.log("Database connection Error", err.message));
+  .connect(DB_URL)
+  .then(() => console.log(`Connected to Database`))
+  .catch((err) => console.log("Database connection Error", err.message));
 
 //MIDDLEWARE
 app.use(express.json());
@@ -51,10 +51,8 @@ app.use("/api/customers", customers);
 app.use("/api/rentals", rentals);
 app.use("/", home);
 
-// Error Handler 
-app.use(function(err, req, res, next) {
-  res.status(500).send(err)
-})
+// Error Handler
+app.use(error);
 
 app.listen(PORT, (err) => {
   if (err) console.log(`Connection: ${err}`);
