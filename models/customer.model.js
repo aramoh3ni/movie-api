@@ -28,9 +28,8 @@ const customerSchema = new mongoos.Schema({
 
 customerSchema.pre("save", async function (next) {
   try {
-    const formatedCode = `${
-      this.lastName
-    }_${new Date().getFullYear()}_${new Date().getMonth()}_${Math.floor(
+    const name = `${this.lastname}`.replace(" ", "");
+    const formatedCode = `${name}_${new Date().getFullYear()}_${new Date().getMonth()}_${Math.floor(
       Math.random() * 1000
     )}`;
     this.code = formatedCode;
