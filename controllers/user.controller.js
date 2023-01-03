@@ -41,7 +41,7 @@ module.exports = {
   },
   getUserById: async (req, res) => {
     const { id } = req.params;
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).select("-password -__v");
     throw !user
       ? createError.NotFound(msg.not_found)
       : res.status(200).json({ data: user });
