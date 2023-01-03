@@ -14,6 +14,13 @@ module.exports = {
     invalid:
       "Sorry! Invalid Token, Your Are Not Allowed to Access before <Sign-in>.",
   },
+  database_msgs: {
+    success: "✔️ Database is Connected to Successfully.",
+    error: "❌ Sorry!, Database Connection Faild."
+  },
+  server_msgs: {
+    listening: (PORT, URL) => `✔️ Server is Running on PORT[${PORT}] | ${URL}:${PORT}`
+  },
   messages: (moduleName) => {
     return {
       item_exists: `Sorry! ${moduleName} is already Exists`,
