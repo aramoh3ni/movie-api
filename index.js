@@ -5,7 +5,14 @@ const mongoose = require("mongoose").set("strictQuery", false);
 const { error } = require("./middleware");
 // const logger = require("./middleware/logger");
 const express = require("express");
-const app = express();
+const app = express()
+
+
+// this will ignore any error from hight level 
+process.on("uncaughtException", (exceptions) => {
+  console.log("We Got an uncaught Exception.")
+  console.log(exceptions.message)
+})
 
 // ROUTES
 const auth = require("./routes/auth");
@@ -16,6 +23,9 @@ const customers = require("./routes/customer");
 const books = require("./routes/books");
 const rentals = require("./routes/rental");
 const home = require("./routes/main");
+const { exceptions } = require("winston");
+
+throw new Error("This is an Error") // this will hight level error that our befor inishilaztion app error middle ware called.
 
 // ENV VARIABLES
 const ENV = process.env.STATUS;
