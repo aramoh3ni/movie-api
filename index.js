@@ -7,7 +7,7 @@ const { error } = require("./middleware");
 const express = require("express");
 const app = express()
 
-
+// handle UncaughtException.
 // this will ignore any error from hight level 
 process.on("uncaughtException", (exceptions) => {
   console.log("We Got an uncaught Exception.")
