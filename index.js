@@ -14,6 +14,12 @@ process.on("uncaughtException", (exceptions) => {
   console.log(exceptions.message)
 })
 
+// hadnel Unhandled Promise Reject
+process.on("unhandledRejection", (exceptions) => {
+  console.log("UnHandle Promise Reject.")
+  console.log(exceptions.message)
+})
+
 // ROUTES
 const auth = require("./routes/auth");
 const users = require("./routes/users");
@@ -25,7 +31,11 @@ const rentals = require("./routes/rental");
 const home = require("./routes/main");
 const { exceptions } = require("winston");
 
-throw new Error("This is an Error") // this will hight level error that our befor inishilaztion app error middle ware called.
+// throw new Error("This is an Error") // this will hight level error that our befor inishilaztion app error middle ware called.
+
+// const p = Promise.reject(new Error("Error is in Promis unhandled Rejection."))
+
+// p.then(() => console.log("Done"))
 
 // ENV VARIABLES
 const ENV = process.env.STATUS;
