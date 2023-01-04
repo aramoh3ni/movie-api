@@ -36,6 +36,18 @@ module.exports = winston.createLogger({
     new winston.transports.File(options.file),
     new winston.transports.Console(options.console),
   ],
-  exitOnError: true,
-  silent: false,
+  exceptionHandlers: [
+    new transports.File({
+      filename: "./logs/uncaughtExceptions.log",
+      level: "error",
+      handleExceptions: true
+    }),
+  ],
+  rejectionHandlers: [
+    new transports.File({
+      filename: "./logs/uncaughtRejections.log",
+      level: "error",
+      handleRejections: true
+    }),
+  ],
 });

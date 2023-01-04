@@ -1,8 +1,3 @@
-const express = require("express");
-
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
-
 const {
   auth,
   users,
@@ -16,7 +11,7 @@ const { error } = require("../middleware");
 
 module.exports = function (app) {
   // Parse to Json
-  app.use(express.json());
+  app.use(require("express").json());
 
   // Routes
   app.use("/api/auth", auth);

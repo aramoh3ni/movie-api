@@ -18,6 +18,7 @@ if (NODE_ENV === "production") {
 
 require("./startup/routes")(app);
 require("./startup/db")(DB_URL);
+require("./startup/validation")
 
 app.listen(PORT, (err) => {
   if (err) return winston.error("Connection Faild");

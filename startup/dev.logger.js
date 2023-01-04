@@ -26,6 +26,8 @@ const options = {
 
 module.exports = winston.createLogger({
   level: "debug",
+  handleExceptions: true,
+  handleRejections: true,
   format: winston.format.combine(
     winston.format.json(),
     winston.format.timestamp({ format: "HH:mm:ss" }),
@@ -39,16 +41,17 @@ module.exports = winston.createLogger({
     new transports.File({
       filename: "./logs/uncaughtExceptions.log",
       level: "error",
+      handleExceptions: true
     }),
   ],
   rejectionHandlers: [
     new transports.File({
       filename: "./logs/uncaughtRejections.log",
       level: "error",
+      handleRejections: true
     }),
   ],
   exitOnError: true,
-  silent: false,
 });
 
 // module.exports = logger;
@@ -103,7 +106,3 @@ module.exports = winston.createLogger({
 //     console.log(exceptions.message);
 //   });
 
-// hadnel Unhandled Promise Reject
-//   process.on("unhandledRejection", (ex) => {
-//     throw ex;
-//   });
