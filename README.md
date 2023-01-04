@@ -63,7 +63,7 @@ then run the server with bellow command in your terminal
 npm run dev
 ```
 
-## A Notice About Installing (This project is in development) 
+## A Notice Befor Using This Project - (This project is in development) 
 
 I am currently working on this movie-api, if any issue accured then you cant contact me.
 
