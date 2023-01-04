@@ -4,7 +4,8 @@
   "description": "Movie-api build with Node.js, Express and mongodb, mongoose ORM",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "jest --watchAll"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "mongoose": "^6.8.2",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
     "winston": "^3.8.2",
     "winston-mongodb": "^5.1.0"

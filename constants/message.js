@@ -19,7 +19,8 @@ module.exports = {
     error: "❌ Sorry!, Database Connection Faild."
   },
   server_msgs: {
-    listening: (PORT, URL) => `✔️ Server is Running on PORT[${PORT}] | ${URL}:${PORT}`
+    listening: (PORT, URL) => `✔️ Server is Running on PORT[${PORT}] | ${URL}:${PORT}`,
+    mode: (MODE) => `✔️ Server is Running on Mode: ${MODE}`
   },
   messages: (moduleName) => {
     return {
