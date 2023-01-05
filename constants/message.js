@@ -15,7 +15,7 @@ module.exports = {
       "Sorry! Invalid Token, Your Are Not Allowed to Access before <Sign-in>.",
   },
   database_msgs: {
-    success: "✔️ Database is Connected to Successfully.",
+    success: (DB_NAME) => `✔️ Database is Connected to [${DB_NAME}] Successfully.`,
     error: "❌ Sorry!, Database Connection Faild."
   },
   server_msgs: {

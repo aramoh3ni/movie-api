@@ -14,8 +14,8 @@ const {
 } = require("../controllers/genre.controller");
 
 // ROUTES
-router.get("/", auth, tryc(getGenre));
-router.get("/:id", auth, validateObjectId, tryc(getGenreById));
+router.get("/", tryc(getGenre));
+router.get("/:id", validateObjectId, tryc(getGenreById));
 router.post("/", auth, isAdmin, tryc(setGenre));
 router.put("/:id", auth, isAdmin, validateObjectId, tryc(updateGenre));
 router.delete("/:id", auth, isAdmin, validateObjectId, tryc(deleteGenre));
