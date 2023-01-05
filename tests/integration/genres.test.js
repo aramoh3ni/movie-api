@@ -34,73 +34,52 @@ describe("/api/genres", () => {
   });
 
   describe("POST /", () => {
-    it("should return 401 unuthorized if client in not logged in.", async () => {
-      const res = await request(server)
-        .post("/api/genres")
-        .send({ name: "genre1" });
+    let token;
+    let name;
+    let userObject = {
+      _id: mongoose.Types.ObjectId().toHexString(),
+      isAdmin: true,
+    };
+    
+    const execute = async () => {
+      return await request(server)
+      .post("/api/genres")
+      .set("x-auth-token", token)
+      .send({ name });
+    };
 
+    beforeEach(() => {
+      token = new UserModel(userObject).genAuthToken();
+      name = "genre1";
+    });
+
+    it("should return 401 unuthorized if client in not logged in.", async () => {
+      token = "";
+      const res = await execute();
       expect(res.status).toBe(401);
     });
 
     it("should return 400 if genre property name lower then 5 characters.", async () => {
-      const user = {
-        _id: mongoose.Types.ObjectId().toHexString(),
-        isAdmin: true,
-      };
-      const token = new UserModel(user).genAuthToken();
-
-      const res = await request(server)
-        .post("/api/genres")
-        .set("x-auth-token", token)
-        .send({ name: "123" });
-
+      name = "123";
+      const res = await execute();
       expect(res.status).toBe(400);
     });
 
     it("should return 400 if gerne property name is bigger then 50 characters.", async () => {
-      const user = {
-        _id: mongoose.Types.ObjectId().toHexString(),
-        isAdmin: true,
-      };
-      const token = new UserModel(user).genAuthToken();
-      const res = await request(server)
-        .post("/api/genres")
-        .set("x-auth-token", token)
-        .send({ name: (10 ^ 100).toString() });
-
+      name = new Array(52).join("a")
+      const res = await execute();
       expect(res.status).toBe(400);
     });
 
     it("should save genre if gerne is valid.", async () => {
-      const user = {
-        _id: mongoose.Types.ObjectId().toHexString(),
-        isAdmin: true,
-      };
-      const token = new UserModel(user).genAuthToken();
-
-      const res = await request(server)
-        .post("/api/genres")
-        .set("x-auth-token", token)
-        .send({ name: "genre1" });
-
-      const genre = await GenreModel.find({ name: "genre1" });
-
+      await execute();
+      const genre = await GenreModel.find({ name });
       expect(genre).not.toBeNull();
     });
 
     it("should save genre if gerne have all valid properties.", async () => {
-      const user = {
-        _id: mongoose.Types.ObjectId().toHexString(),
-        isAdmin: true,
-      };
-      const token = new UserModel(user).genAuthToken();
-
-      const res = await request(server)
-        .post("/api/genres")
-        .set("x-auth-token", token)
-        .send({ name: "genre1" });
-
-      expect(res.body.data).toHaveProperty('name', "genre1");
+     const res = await execute();
+      expect(res.body.data).toHaveProperty("name", "genre1");
       expect(res.body.data).toHaveProperty("_id");
     });
   });
