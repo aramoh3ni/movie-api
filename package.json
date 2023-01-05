@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "test": "jest --watchAll --verbose --detectOpenHandles"
+    "test": "jest --watchAll --verbose"
   },
   "author": "",
   "license": "ISC",
