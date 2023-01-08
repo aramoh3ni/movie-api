@@ -6,6 +6,7 @@ const {
   customers,
   rentals,
   main,
+  returns,
 } = require("../routes");
 const { error } = require("../middleware");
 
@@ -20,6 +21,7 @@ module.exports = function (app) {
   app.use("/api/genres", genres);
   app.use("/api/customers", customers);
   app.use("/api/rentals", rentals);
+  app.use("/api/returns", returns);
   app.use("/", main);
 
   // Error Handler
