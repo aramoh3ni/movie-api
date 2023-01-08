@@ -1,6 +1,8 @@
 /node_modules
 node_modules/
 /learningLogs
+coverage/
+
 
 # dotenv environment variables file
 .env

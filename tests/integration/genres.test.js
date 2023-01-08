@@ -6,8 +6,16 @@ const mongoose = require("mongoose");
 let server;
 
 describe("/api/genres", () => {
+  let token;
+  let name;
+  let userObject = {
+    _id: mongoose.Types.ObjectId().toHexString(),
+    isAdmin: true,
+  };
   beforeEach(() => {
     server = require("../../index");
+    token = new UserModel(userObject).genAuthToken();
+    name = "genre1";
   });
   afterEach(async () => {
     server.close();
@@ -18,7 +26,9 @@ describe("/api/genres", () => {
     it("shoud return all genres", async () => {
       await GenreModel.insertMany([{ name: "genre1" }, { name: "genre2" }]);
 
-      const res = await request(server).get("/api/genres");
+      const res = await request(server)
+        .get("/api/genres")
+        .set("x-auth-token", token);
       expect(res.status).toBe(200);
       expect(res.body.data.length).toBe(2);
       expect(res.body.data.some((g) => g.name === "genre1")).toBe(true);
@@ -28,30 +38,20 @@ describe("/api/genres", () => {
 
   describe("GET /:id", () => {
     it("should return 404 if invalid id is passed.", async () => {
-      const res = await request(server).get(`/api/genres/1`);
+      const res = await request(server)
+        .get(`/api/genres/1`)
+        .set("x-auth-token", token);
       expect(res.status).toBe(404);
     });
   });
 
   describe("POST /", () => {
-    let token;
-    let name;
-    let userObject = {
-      _id: mongoose.Types.ObjectId().toHexString(),
-      isAdmin: true,
-    };
-    
     const execute = async () => {
       return await request(server)
-      .post("/api/genres")
-      .set("x-auth-token", token)
-      .send({ name });
+        .post("/api/genres")
+        .set("x-auth-token", token)
+        .send({ name });
     };
-
-    beforeEach(() => {
-      token = new UserModel(userObject).genAuthToken();
-      name = "genre1";
-    });
 
     it("should return 401 unuthorized if client in not logged in.", async () => {
       token = "";
@@ -66,7 +66,7 @@ describe("/api/genres", () => {
     });
 
     it("should return 400 if gerne property name is bigger then 50 characters.", async () => {
-      name = new Array(52).join("a")
+      name = new Array(52).join("a");
       const res = await execute();
       expect(res.status).toBe(400);
     });
@@ -78,9 +78,24 @@ describe("/api/genres", () => {
     });
 
     it("should save genre if gerne have all valid properties.", async () => {
-     const res = await execute();
+      const res = await execute();
       expect(res.body.data).toHaveProperty("name", "genre1");
       expect(res.body.data).toHaveProperty("_id");
+    });
+  });
+
+  describe("PUT /", () => {
+    it("should return 400 if genre is already exists", async () => {
+      const id = await request(server)
+        .post("/api/genres/")
+        .set("x-auth-token", token)
+        .send({ _id });
+
+      const res = request(server)
+        .put(`/api/genres/${newGenre.id}`)
+        .get({ name: "genre1" });
+
+      expect(res.status).toBe(400);
     });
   });
 });
