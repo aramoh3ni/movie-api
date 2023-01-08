@@ -50,7 +50,7 @@ const rentalSchema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
-    dataReturned: Date,
+    dateReturned: Date,
     rentalFee: { type: Number, min: 0 },
   },
   { timestamps: true }
