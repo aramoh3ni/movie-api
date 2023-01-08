@@ -6,17 +6,10 @@ const mongoose = require("mongoose");
 let server;
 
 describe("/api/genres", () => {
-  let token;
-  let name;
-  let userObject = {
-    _id: mongoose.Types.ObjectId().toHexString(),
-    isAdmin: true,
-  };
   beforeEach(() => {
     server = require("../../index");
-    token = new UserModel(userObject).genAuthToken();
-    name = "genre1";
   });
+
   afterEach(async () => {
     server.close();
     await GenreModel.deleteMany({});
@@ -24,11 +17,14 @@ describe("/api/genres", () => {
 
   describe("GET /", () => {
     it("shoud return all genres", async () => {
-      await GenreModel.insertMany([{ name: "genre1" }, { name: "genre2" }]);
+      token = new UserModel({ isAdmin: true }).genAuthToken();
+      const genres = [{ name: "genre1" }, { name: "genre2" }];
+      await GenreModel.collection.insertMany(genres);
 
       const res = await request(server)
         .get("/api/genres")
         .set("x-auth-token", token);
+
       expect(res.status).toBe(200);
       expect(res.body.data.length).toBe(2);
       expect(res.body.data.some((g) => g.name === "genre1")).toBe(true);
@@ -37,21 +33,44 @@ describe("/api/genres", () => {
   });
 
   describe("GET /:id", () => {
+    it("should return genre if valid id is passed.", async () => {
+      const genre = new GenreModel({ name: "genre1ّ" });
+      await genre.save();
+      const res = await request(server).get("/api/genres/" + genre._id);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("name", genre.name);
+    });
+
     it("should return 404 if invalid id is passed.", async () => {
       const res = await request(server)
         .get(`/api/genres/1`)
         .set("x-auth-token", token);
       expect(res.status).toBe(404);
     });
+
+    it("should return 404 if genre with given id is not exists.", async () => {
+      const id = mongoose.Types.ObjectId();
+      const res = await request(server).get(`/api/genres/${id}`);
+
+      expect(res.status).toBe(404);
+    });
   });
 
   describe("POST /", () => {
+    let name;
+    let token;
     const execute = async () => {
       return await request(server)
         .post("/api/genres")
         .set("x-auth-token", token)
         .send({ name });
     };
+
+    beforeEach(async () => {
+      token = new UserModel({ isAdmin: true }).genAuthToken();
+      name = "genre1";
+    });
 
     it("should return 401 unuthorized if client in not logged in.", async () => {
       token = "";
@@ -84,18 +103,35 @@ describe("/api/genres", () => {
     });
   });
 
-  describe("PUT /", () => {
-    it("should return 400 if genre is already exists", async () => {
-      const id = await request(server)
-        .post("/api/genres/")
-        .set("x-auth-token", token)
-        .send({ _id });
+  describe("DELETE /:id", () => {
+    let token;
+    let genre;
+    let id;
 
-      const res = request(server)
-        .put(`/api/genres/${newGenre.id}`)
-        .get({ name: "genre1" });
+    const execute = async () => {
+      return await request(server)
+        .delete("/api/genres" + id)
+        .set("x-auth-token", token);
+    };
 
-      expect(res.status).toBe(400);
+    beforeEach(async () => {
+      genre = new GenreModel({ name: "genre1" });
+      await genre.save();
+
+      id = genre._id;
+      token = new UserModel({ isAdmin: true }).genAuthToken();
+    });
+
+    it("sould 404 if id is invalid.", async () => {
+      id = 123;
+      const res = await execute();
+      expect(res.status).toBe(404);
+    });
+
+    it("should return 403 if user is not an Admin", async () => {
+      token = new UserModel({ isAdmin: false }).genAuthToken();
+      const res = await execute();
+      expect(res.status).toBe(403);
     });
   });
 });

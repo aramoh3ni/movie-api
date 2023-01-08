@@ -18,7 +18,7 @@ const getGenreById = async (req, res) => {
   const genre = await GenreModel.findById(id);
   throw !genre
     ? createError.NotFound(msg.not_found)
-    : res.status(201).json({ data: genre });
+    : res.status(200).json({ data: genre });
 };
 
 const setGenre = async (req, res) => {
@@ -62,9 +62,8 @@ const updateGenre = async (req, res) => {
 const deleteGenre = async (req, res) => {
   const { id } = req.params;
   const genre = await GenreModel.findByIdAndRemove(id);
-  throw !genre
-    ? createError.NotFound(msg.delete_error)
-    : res.status(200).json(msg.delete);
+  if (!genre) throw createError.NotFound(msg.delete_error);
+  res.status(200).json(msg.delete);
 };
 
 module.exports = {

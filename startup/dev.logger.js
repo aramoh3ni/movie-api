@@ -17,7 +17,7 @@ const options = {
     colorize: false,
   },
   console: {
-    level: "debug",
+    level: "info",
     handleExceptions: true,
     json: false,
     colorize: true,
@@ -25,7 +25,7 @@ const options = {
 };
 
 module.exports = winston.createLogger({
-  level: "debug",
+  level: "info",
   handleExceptions: true,
   handleRejections: true,
   format: winston.format.combine(
@@ -41,14 +41,14 @@ module.exports = winston.createLogger({
     new transports.File({
       filename: "./logs/uncaughtExceptions.log",
       level: "error",
-      handleExceptions: true
+      handleExceptions: true,
     }),
   ],
   rejectionHandlers: [
     new transports.File({
       filename: "./logs/uncaughtRejections.log",
       level: "error",
-      handleRejections: true
+      handleRejections: true,
     }),
   ],
   exitOnError: true,

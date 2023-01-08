@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mongoos = require("mongoose");
-const { UserModel } = require("../../models/users.model");
+const { UserModel } = require("../../../models/users.model");
 require("dotenv/config");
 
 describe("user.generateAuthToken", () => {
@@ -25,7 +25,7 @@ describe("user.isValidPassword", () => {
 
     const user = new UserModel({ password: hashedPassword });
     const result = await user.isValidPassword(password);
-    console.log(result)
+    console.log(result);
     expect(result).toBe(true);
   });
 });

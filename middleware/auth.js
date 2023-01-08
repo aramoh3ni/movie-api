@@ -11,6 +11,6 @@ module.exports = (req, res, next) => {
     req.user = payload;
     next();
   } catch (error) {
-    throw createError.BadRequest(auth_token_msgs.invalid);
+    throw createError.Forbidden(auth_token_msgs.invalid);
   }
 };

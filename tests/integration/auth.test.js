@@ -35,10 +35,10 @@ describe("first", () => {
     name = "genre1";
   });
 
-  it("should return 400 if no token is not set.", async () => {
+  it("should return 403 if no token is not set.", async () => {
     token = "wornge token";
     const res = await execute();
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(403);
   });
 
   it("should return 401 if token not verfied.", async () => {
