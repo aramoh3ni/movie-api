@@ -5,5 +5,6 @@ module.exports = {
   movies: require("./movie"),
   rentals: require("./rental"),
   users: require("./users"),
+  returns: require("./returns"),
   main: require("./main"),
 };
