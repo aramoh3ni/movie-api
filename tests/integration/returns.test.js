@@ -78,7 +78,6 @@ describe("/api/rentals", () => {
   it("should return 404 if not rental is exists for customer/movie combination.", async () => {
     await RentalModel.remove();
     const res = await execute();
-    console.log(res);
     expect(res.status).toBe(404);
   });
 
