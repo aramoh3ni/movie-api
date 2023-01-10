@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
   isAdmin: Boolean,
 });
 
-// methods
+// instans methods
 userSchema.methods.genAuthToken = function () {
   const payload = { _id: this._id, isAdmin: this.isAdmin };
   const secret = process.env.ACCESS_TOKEN_SECERT;
@@ -43,7 +43,7 @@ userSchema.methods.isValidPassword = async function (password) {
   try {
     return await bcrypt.compare(password, this.password);
   } catch (exeption) {
-    throw exeption
+    throw exeption;
   }
 };
 
