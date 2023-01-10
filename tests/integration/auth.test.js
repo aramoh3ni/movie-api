@@ -13,7 +13,7 @@ describe("first", () => {
 
   afterEach(async () => {
     server.close();
-    await GenreModel.deleteMany({});
+    await GenreModel.remove({});
   });
 
   let token;
@@ -23,8 +23,8 @@ describe("first", () => {
     isAdmin: true,
   };
 
-  const execute = () => {
-    return request(server)
+  const execute = async () => {
+    return await request(server)
       .post("/api/genres")
       .set("x-auth-token", token)
       .send({ name });
