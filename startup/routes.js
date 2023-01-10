@@ -1,3 +1,4 @@
+const express = require("express");
 const {
   auth,
   users,
@@ -12,7 +13,8 @@ const { error } = require("../middleware");
 
 module.exports = function (app) {
   // Parse to Json
-  app.use(require("express").json());
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
 
   // Routes
   app.use("/api/auth", auth);
