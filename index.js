@@ -14,6 +14,8 @@ let logger = require("./startup/dev.logger");
 if (NODE_ENV === "production") {
   logger = require("./startup/pro.logger");
 }
+
+require("./startup/cors")(app);
 require("./startup/routes")(app);
 require("./startup/db")(NODE_ENV);
 require("./startup/validation")();
