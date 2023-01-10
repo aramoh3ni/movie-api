@@ -8,10 +8,10 @@ const { RentalModel } = require("../models/rental.model");
 const { returns_msgs } = require("../constants/message");
 
 const setReturns = async (req, res) => {
-  const rental = await RentalModel.findOne({
-    "customer._id": req.body.customerId,
-    "movie._id": req.body.movieId,
-  });
+  const rental = await RentalModel.lookup(
+    req.body.customerId,
+    req.body.movieId
+  );
 
   if (!rental) throw createError.NotFound(returns_msgs.rental_not_created);
 
