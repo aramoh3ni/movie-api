@@ -56,6 +56,14 @@ const rentalSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// static method.
+rentalSchema.statics.lookup = function (customerId, movieId) {
+  return this.findOne({
+    "customer._id": customerId,
+    "movie._id": movieId,
+  });
+};
+
 const RentalModel = mongoose.model("Rental", rentalSchema);
 
 const validateRental = (rental) =>
