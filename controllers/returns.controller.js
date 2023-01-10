@@ -22,7 +22,7 @@ const setReturns = async (req, res) => {
     "movie._id": req.body.movieId,
   });
 
-  if (rental)
+  if (!rental)
     throw createError.NotFound(
       "Sorry!, Rental Process did not created before."
     );
@@ -32,16 +32,13 @@ const setReturns = async (req, res) => {
 
   rental.dateReturned = new Date();
 
-  const days = new Date() - 10;
-  rental.rentalFee = rental.movie.dailyRentalRate * days;
-
   rental.rentalFee =
     moment().diff(rental.dateOut, "days") * rental.movie.dailyRentalRate;
 
   await rental.save();
 
   await MovieModel.findByIdAndUpdate(
-    movieId,
+    req.body.movieId,
     { $inc: { numberInStock: 1 } },
     { new: true }
   );
