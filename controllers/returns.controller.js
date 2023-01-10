@@ -1,3 +1,4 @@
+const Joi = require("joi");
 const moment = require("moment");
 const createError = require("http-errors");
 
@@ -32,4 +33,10 @@ const setReturns = async (req, res) => {
   res.status(200).send({ message: returns_msgs.sucess, data: rental });
 };
 
-module.exports = { setReturns };
+const validateReturns = (req) =>
+  Joi.object({
+    customerId: Joi.objectId().required(),
+    movieId: Joi.objectId().required(),
+  }).validate(req);
+
+module.exports = { setReturns, validateReturns };

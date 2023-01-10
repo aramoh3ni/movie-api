@@ -1,15 +1,10 @@
-const Joi = require("joi");
-
 const router = require("express").Router();
 const { auth, isAdmin, tryc, validateBody } = require("../middleware");
 
-const { setReturns } = require("../controllers/returns.controller");
-
-const validateReturns = (req) =>
-  Joi.object({
-    customerId: Joi.objectId().required(),
-    movieId: Joi.objectId().required(),
-  }).validate(req);
+const {
+  setReturns,
+  validateReturns,
+} = require("../controllers/returns.controller");
 
 router.post(
   "/",

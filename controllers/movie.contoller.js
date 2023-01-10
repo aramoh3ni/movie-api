@@ -22,8 +22,6 @@ async function getMovieById(req, res) {
 
 async function setMovie(req, res) {
   const { id } = req.params;
-  const { error } = validateMovie(req.body);
-  if (error) throw createError.BadRequest(error.details[0].message);
 
   const movie = await MovieModel.findById(id);
   if (movie) throw createError.NotAcceptable(msg.item_exists);
@@ -46,8 +44,6 @@ async function setMovie(req, res) {
 
 async function updateMovie(req, res) {
   const { id } = req.params;
-  const { error } = validateMovie(req.body);
-  if (error) throw createError.BadRequest(error.details[0].message);
 
   const genre = await GenreModel.findById(req.body.genreId);
   if (!genre) throw createError.NotFound(messages("Genere").not_found);

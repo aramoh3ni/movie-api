@@ -22,8 +22,6 @@ const getRentalById = async (req, res) => {
 
 const setRental = async (req, res) => {
   const { customerId, movieId } = req.body;
-  const { error } = validateRental({ customerId, movieId });
-  if (error) throw createError.BadRequest(error.details[0].message);
 
   const customer = await CustomerModel.findById(customerId);
   if (!customer) throw createError.NotFound(messages("Customer").not_found);

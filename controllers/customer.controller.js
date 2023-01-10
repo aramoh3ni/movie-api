@@ -1,5 +1,5 @@
 // MODELS
-const { CustomerModel, validateCustomer } = require("../models/customer.model");
+const { CustomerModel } = require("../models/customer.model");
 const createError = require("http-errors");
 
 const { messages } = require("../constants/message");
@@ -19,9 +19,6 @@ const getCutomerById = async (req, res) => {
     : res.status(200).send({ data: customer });
 };
 const setCustomer = async (req, res) => {
-  const { error } = validateCustomer(req.body);
-  if (error) throw createError.BadRequest(error.details[0].message);
-
   let customer = new CustomerModel({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -37,8 +34,6 @@ const setCustomer = async (req, res) => {
 };
 const updateCustomer = async (req, res) => {
   const { id } = req.params;
-  const { error } = validateCustomer(req.body);
-  if (error) throw createError.BadRequest(error.details[0].message);
 
   let customer = await CustomerModel.findByIdAndUpdate(
     id,

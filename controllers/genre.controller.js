@@ -22,9 +22,6 @@ const getGenreById = async (req, res) => {
 };
 
 const setGenre = async (req, res) => {
-  const { error } = validateGenre(req.body);
-  if (error) throw createError.BadRequest(error.details[0].message);
-
   const genreExists = await GenreModel.findOne({ name: req.body.name });
   if (genreExists) throw createError.BadRequest(msg.item_exists);
 
@@ -39,8 +36,6 @@ const setGenre = async (req, res) => {
 };
 const updateGenre = async (req, res) => {
   const { id } = req.params;
-  const { error } = validateGenre(req.body);
-  if (error) throw createError.BadRequest(error.details[0].message);
 
   const movie = await MovieModel.updateMany(
     { "genre._id": id },

@@ -16,9 +16,6 @@ module.exports = {
   },
 
   updateMe: async (req, res) => {
-    const { error } = validateMe(req.body);
-    if (error) throw createError.BadRequest(error.details[0].message);
-
     user = await UserModel.findByIdAndUpdate(
       req.user._id,
       {
@@ -47,9 +44,6 @@ module.exports = {
       : res.status(200).json({ data: user });
   },
   setUser: async (req, res) => {
-    const { error } = validateUser(req.body);
-    if (error) throw createError.BadRequest(error.details[0].message);
-
     const userExists = await UserModel.findOne({ email: req.body.email });
     if (userExists) throw createError.BadRequest(msg.item_exists);
 
@@ -68,10 +62,9 @@ module.exports = {
             message: msg.create,
           });
   },
+  validateMe: (user) =>
+    Joi.object({
+      firstName: Joi.string().min(2).max(64).label("Firstname"),
+      lastName: Joi.string().min(2).max(54).label("Lastname"),
+    }).validate(user),
 };
-
-const validateMe = (user) =>
-  Joi.object({
-    firstName: Joi.string().min(2).max(64).label("Firstname"),
-    lastName: Joi.string().min(2).max(54).label("Lastname"),
-  }).validate(user);
