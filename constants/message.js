@@ -15,12 +15,19 @@ module.exports = {
       "Sorry! Invalid Token, Your Are Not Allowed to Access before <Sign-in>.",
   },
   database_msgs: {
-    success: (DB_NAME) => `✔️ Database is Connected to [${DB_NAME}] Successfully.`,
-    error: "❌ Sorry!, Database Connection Faild."
+    success: (DB_NAME) =>
+      `✔️ Database is Connected to [${DB_NAME}] Successfully.`,
+    error: "❌ Sorry!, Database Connection Faild.",
   },
   server_msgs: {
-    listening: (PORT, URL) => `✔️ Server is Running on PORT[${PORT}] | ${URL}:${PORT}`,
-    mode: (MODE) => `✔️ Server is Running on Mode: ${MODE}`
+    listening: (PORT, URL) =>
+      `✔️ Server is Running on PORT[${PORT}] | ${URL}:${PORT}`,
+    mode: (MODE) => `✔️ Server is Running on Mode: ${MODE}`,
+  },
+  returns_msgs: {
+    processed: "Sorry!, Rental already processed.",
+    rental_not_created: "Sorry! Rental did not created yet.",
+    sucess: "Thank you, Movie return back to stock.",
   },
   messages: (moduleName) => {
     return {
