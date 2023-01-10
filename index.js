@@ -16,7 +16,7 @@ if (NODE_ENV === "production") {
 }
 require("./startup/routes")(app);
 require("./startup/db")(NODE_ENV);
-require("./startup/validation");
+require("./startup/validation")();
 
 const server = app.listen(PORT, (err) => {
   if (err) return winston.error("Connection Faild");
