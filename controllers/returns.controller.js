@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const moment = require("moment");
 const createError = require("http-errors");
 
 const { MovieModel } = require("../models/movie.model");
@@ -17,18 +16,12 @@ const setReturns = async (req, res) => {
 
   if (rental.dateReturned) throw createError.BadRequest(returns_msgs.processed);
 
-  rental.dateReturned = new Date();
-
-  rental.rentalFee =
-    moment().diff(rental.dateOut, "days") * rental.movie.dailyRentalRate;
-
+  rental.return();
   await rental.save();
 
-  await MovieModel.findByIdAndUpdate(
-    req.body.movieId,
-    { $inc: { numberInStock: 1 } },
-    { new: true }
-  );
+  await MovieModel.findByIdAndUpdate(req.body.movieId, {
+    $inc: { numberInStock: 1 },
+  });
 
   res.status(200).send({ message: returns_msgs.sucess, data: rental });
 };
